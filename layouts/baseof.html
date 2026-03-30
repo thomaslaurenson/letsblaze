@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="/index.xml">
+  <link rel="icon" href="/favicon.ico">
+  <!-- letsblaze: dark mode via system preference only, no JS -->
+  <style>
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #111; color: #ddd; }
+      a { color: #6ab0f5; }
+      a:visited { color: #c9a0f5; }
+      pre { background-color: #1e1e1e; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content">Skip to content</a>
+  <header>
+    {{ if .IsHome }}<h1><a href="/">{{ .Site.Title }}</a></h1>{{ else }}<p><a href="/">{{ .Site.Title }}</a></p>{{ end }}
+    <nav aria-label="Main navigation">
+      {{ range .Site.Menus.main }}
+        <a href="{{ .URL }}">{{ .Name }}</a>
+      {{ end }}
+    </nav>
+    <hr>
+  </header>
+  <main id="main-content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  <hr>
+  <footer>
+    {{ with .Site.Params.author }}<p>{{ . }}</p>{{ end }}
+  </footer>
+</body>
+</html>

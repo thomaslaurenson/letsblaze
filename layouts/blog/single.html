@@ -1,0 +1,15 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<small>
+  {{ .Date.Format .Site.Params.dateFormat }}
+  {{ range .Params.tags }} · <a href="/tags/{{ . | urlize }}/">{{ . }}</a>{{ end }}
+</small>
+<hr>
+{{ .Content }}
+<hr>
+<nav aria-label="Page navigation">
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev — {{ .Title }}</a>{{ end }}
+  {{ if and .PrevInSection .NextInSection }} · {{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next — {{ .Title }}</a>{{ end }}
+</nav>
+{{ end }}

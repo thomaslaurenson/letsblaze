@@ -1,0 +1,12 @@
+name = "letsblaze"
+license = "MIT"
+licenselink = "https://opensource.org/licenses/MIT"
+description = "Blazingly fast, highly opinionated flyweight Hugo theme."
+homepage = "https://letsblaze.thomaslaurenson.com"
+tags = ["minimal", "blog", "docs", "html", "accessible", "nojs"]
+features = ["blog", "docs", "tags", "rss", "dark mode", "accessible"]
+min_version = "0.134.0"
+
+[author]
+  name = "Thomas Laurenson"
+  homepage = "https://github.com/thomaslaurenson"

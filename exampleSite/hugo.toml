@@ -1,0 +1,44 @@
+baseURL = "https://letsblaze.thomaslaurenson.com"
+languageCode = "en-us"
+title = "letsblaze example"
+enableEmoji = true
+theme = "letsblaze"
+themesDir = "../.."
+
+# Pagination: pagerSize replaces the old top-level `paginate` key (changed ~v0.128.0)
+[pagination]
+  pagerSize = 10
+
+[markup.goldmark.renderer]
+  unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
+
+[markup.highlight]
+  noClasses = true          # inline Chroma styles — required since we have no external CSS
+  style = "monochrome"      # overridden at runtime by params.codeStyle
+
+[params]
+  author = "Example Author"
+  description = "A minimal example site built with the letsblaze Hugo theme."
+  dateFormat = "2006-01-02" # Go reference time format
+  homepagePostCount = 5     # number of posts shown on the homepage
+  codeStyle = "monochrome"  # any valid Chroma style name
+
+[[menus.main]]
+  name = "Blog"
+  url = "/blog/"
+  weight = 1
+
+[[menus.main]]
+  name = "Docs"
+  url = "/docs/"
+  weight = 2
+
+[[menus.main]]
+  name = "Tags"
+  url = "/tags/"
+  weight = 3
+
+[[menus.main]]
+  name = "About"
+  url = "/about/"
+  weight = 4

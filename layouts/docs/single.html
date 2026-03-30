@@ -1,0 +1,28 @@
+{{ define "main" }}
+<details open>
+  <summary>In this section</summary>
+  <nav aria-label="Section navigation">
+    {{ range .Parent.Pages }}
+      <div><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
+    {{ end }}
+  </nav>
+</details>
+{{ range .Parent.Parent.Sections }}
+  <details>
+    <summary>{{ .Title }}</summary>
+    <nav aria-label="{{ .Title }} navigation">
+      {{ range .Pages }}
+        <div><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
+      {{ end }}
+    </nav>
+  </details>
+{{ end }}
+<h1>{{ .Title }}</h1>
+{{ .Content }}
+<hr>
+<nav aria-label="Page navigation">
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev — {{ .Title }}</a>{{ end }}
+  {{ if and .PrevInSection .NextInSection }} · {{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next — {{ .Title }}</a>{{ end }}
+</nav>
+{{ end }}

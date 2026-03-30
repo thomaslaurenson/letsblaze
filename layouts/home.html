@@ -1,0 +1,11 @@
+{{ define "main" }}
+{{ with .Site.Params.description }}<p>{{ . }}</p>{{ end }}
+{{ $count := .Site.Params.homepagePostCount | default 5 }}
+{{ $posts := where .Site.RegularPages "Section" "blog" }}
+{{ range first $count $posts }}
+  <div>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <small>{{ .Date.Format $.Site.Params.dateFormat }}</small>
+  </div>
+{{ end }}
+{{ end }}
