@@ -2,10 +2,15 @@
 {{ with .Site.Params.description }}<p>{{ . }}</p>{{ end }}
 {{ $count := .Site.Params.homepagePostCount | default 5 }}
 {{ $posts := where .Site.RegularPages "Section" "blog" }}
-{{ range first $count $posts }}
-  <div>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-    <small>{{ .Date.Format $.Site.Params.dateFormat }}</small>
-  </div>
-{{ end }}
+<section aria-label="Recent posts">
+  {{ range first $count $posts }}
+    <div>
+      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <p>
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format $.Site.Params.dateFormat }}</time>
+      </p>
+      <p>{{ .Summary }}</p>
+    </div>
+  {{ end }}
+</section>
 {{ end }}

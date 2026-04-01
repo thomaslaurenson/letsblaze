@@ -1,15 +1,17 @@
 {{ define "main" }}
-<h1>{{ .Title }}</h1>
-<small>
-  {{ .Date.Format .Site.Params.dateFormat }}
-  {{ range .Params.tags }} · <a href="/tags/{{ . | urlize }}/">{{ . }}</a>{{ end }}
-</small>
+<article>
+  <h1>{{ .Title }}</h1>
+  <p>
+    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format .Site.Params.dateFormat }}</time>
+    {{ range .Params.tags }} &middot; <a href="/tags/{{ . | urlize }}/">{{ . }}</a>{{ end }}
+  </p>
+  <hr>
+  {{ .Content }}
+</article>
 <hr>
-{{ .Content }}
-<hr>
-<nav aria-label="Page navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev — {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} · {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next — {{ .Title }}</a>{{ end }}
+<nav aria-label="Post navigation">
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev &mdash; {{ .Title }}</a>{{ end }}
+  {{ if and .PrevInSection .NextInSection }} &middot; {{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next &mdash; {{ .Title }}</a>{{ end }}
 </nav>
 {{ end }}

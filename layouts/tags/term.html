@@ -1,20 +1,4 @@
 {{ define "main" }}
 <h1>{{ .Title }}</h1>
-{{ $paginator := .Paginate .Pages }}
-{{ range $i, $page := $paginator.Pages }}
-  {{ if gt $i 0 }}<hr>{{ end }}
-  <h2><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h2>
-  <small>
-    {{ $page.Date.Format $.Site.Params.dateFormat }}
-    {{ range $page.Params.tags }} · <a href="/tags/{{ . | urlize }}/">{{ . }}</a>{{ end }}
-  </small>
-  <p>{{ $page.Summary }}</p>
-{{ end }}
-{{ if gt $paginator.TotalPages 1 }}
-<nav aria-label="Page navigation">
-  {{ with $paginator.Prev }}<a href="{{ .URL }}">newer posts</a>{{ end }}
-  {{ if and $paginator.HasPrev $paginator.HasNext }} · {{ end }}
-  {{ with $paginator.Next }}<a href="{{ .URL }}">older posts</a>{{ end }}
-</nav>
-{{ end }}
+{{ partial "post-list.html" . }}
 {{ end }}

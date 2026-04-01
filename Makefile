@@ -3,11 +3,15 @@ SITE_DIR  := exampleSite
 PUBLIC    := $(SITE_DIR)/public
 HUGO_FLAGS := --themesDir ../.. --theme $(THEME)
 
-.PHONY: build clean rebuild check new-post new-doc
+.PHONY: build serve clean rebuild check new-post new-doc
 
 ## build: build the exampleSite into public/
 build:
 	cd $(SITE_DIR) && hugo $(HUGO_FLAGS)
+
+# serve: start a local development server with live reload
+serve:
+	cd $(SITE_DIR) && hugo server $(HUGO_FLAGS)
 
 ## clean: remove the generated public/ directory
 clean:
@@ -16,18 +20,9 @@ clean:
 ## rebuild: clean then build
 rebuild: clean build
 
-## check: rebuild and run all constraint + feature checks
-check: rebuild
-	@echo ""
-	@echo "=== Constraint checks (all must be 0) ==="
-	@echo "script tags:     $$(grep -rc '<script' $(PUBLIC) | grep -v ':0' | wc -l)"
-	@echo "ext stylesheets: $$(grep -rc 'rel=\"stylesheet\"' $(PUBLIC) | grep -v ':0' | wc -l)"
-	@echo "class attrs:     $$(grep -rc 'class=\"' $(PUBLIC) | grep -v ':0' | wc -l) files (Chroma code blocks expected)"
-	@echo "cdn resources:   $$(grep -rc 'cdn\.' $(PUBLIC) | grep -v ':0' | wc -l)"
-	@echo ""
-	@echo "=== Feature checks ==="
-	@echo "dark mode block: $$(grep -rc 'prefers-color-scheme' $(PUBLIC)/index.html)"
-	@echo "skip link:       $$(grep -rc 'Skip to content' $(PUBLIC)/index.html)"
+## check: run the full test suite (build + constraint + feature checks)
+check:
+	@bash test.sh
 	@echo "overflow tables: $$(grep -rc 'overflow-x' $(PUBLIC)/docs/getting-started/installation/index.html)"
 	@echo "blog prev/next:  $$(grep -rc 'prev —\|next —' $(PUBLIC)/blog/hello-world/index.html)"
 	@echo "docs prev/next:  $$(grep -rc 'prev —\|next —' $(PUBLIC)/docs/getting-started/installation/index.html)"

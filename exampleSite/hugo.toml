@@ -13,15 +13,17 @@ themesDir = "../.."
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
 
 [markup.highlight]
-  noClasses = true          # inline Chroma styles — required since we have no external CSS
-  style = "monochrome"      # overridden at runtime by params.codeStyle
+  noClasses = true    # inline Chroma styles — required since we have no external CSS
+  style = "monochrome"
+  # letsblaze is opinionated: monochrome is the only supported code style.
+  # To use a different Chroma style, change the value above.
+  # See https://xyproto.github.io/splash/docs/ for available styles.
 
 [params]
   author = "Example Author"
   description = "A minimal example site built with the letsblaze Hugo theme."
   dateFormat = "2006-01-02" # Go reference time format
   homepagePostCount = 5     # number of posts shown on the homepage
-  codeStyle = "monochrome"  # any valid Chroma style name
 
 [[menus.main]]
   name = "Blog"

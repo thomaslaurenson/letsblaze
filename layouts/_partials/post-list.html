@@ -1,0 +1,19 @@
+{{ $paginator := .Paginate .Pages }}
+{{ range $i, $page := $paginator.Pages }}
+  {{ if gt $i 0 }}<hr>{{ end }}
+  <article>
+    <h2><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h2>
+    <p>
+      <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format $.Site.Params.dateFormat }}</time>
+      {{ range $page.Params.tags }} &middot; <a href="/tags/{{ . | urlize }}/">{{ . }}</a>{{ end }}
+    </p>
+    <p>{{ $page.Summary }}</p>
+  </article>
+{{ end }}
+{{ if gt $paginator.TotalPages 1 }}
+<nav aria-label="Page navigation">
+  {{ with $paginator.Prev }}<a href="{{ .URL }}">newer posts</a>{{ end }}
+  {{ if and $paginator.HasPrev $paginator.HasNext }} &middot; {{ end }}
+  {{ with $paginator.Next }}<a href="{{ .URL }}">older posts</a>{{ end }}
+</nav>
+{{ end }}

@@ -1,7 +1,7 @@
 ---
 title: "Lets Blaze Markdown Syntax"
 date: 2024-01-01
-summary: "TODO"
+summary: "A reference for all Markdown elements supported by the letsblaze theme, including headings, tables, code blocks, and shortcodes."
 draft: false
 ---
 

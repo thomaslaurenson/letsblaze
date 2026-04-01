@@ -1,28 +1,39 @@
 {{ define "main" }}
-<details open>
-  <summary>In this section</summary>
-  <nav aria-label="Section navigation">
-    {{ range .Parent.Pages }}
-      <div><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
-    {{ end }}
-  </nav>
-</details>
-{{ range .Parent.Parent.Sections }}
-  <details>
-    <summary>{{ .Title }}</summary>
-    <nav aria-label="{{ .Title }} navigation">
-      {{ range .Pages }}
-        <div><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
-      {{ end }}
+<aside>
+  <details open>
+    <summary>In this section</summary>
+    <nav aria-label="Section navigation">
+      <ul>
+        {{ range .Parent.Pages }}
+          <li><a href="{{ .RelPermalink }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
     </nav>
   </details>
-{{ end }}
-<h1>{{ .Title }}</h1>
-{{ .Content }}
+  {{/* Note: sidebar assumes max two levels of doc nesting (section → pages).
+       A three-level hierarchy (section → subsection → pages) will not render
+       the third level. This is a known limitation. */}}
+  {{ range .Parent.Parent.Sections }}
+    <details>
+      <summary>{{ .Title }}</summary>
+      <nav aria-label="{{ .Title }} navigation">
+        <ul>
+          {{ range .Pages }}
+            <li><a href="{{ .RelPermalink }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>{{ .Title }}</a></li>
+          {{ end }}
+        </ul>
+      </nav>
+    </details>
+  {{ end }}
+</aside>
+<article>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+</article>
 <hr>
 <nav aria-label="Page navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev — {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} · {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next — {{ .Title }}</a>{{ end }}
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev &mdash; {{ .Title }}</a>{{ end }}
+  {{ if and .PrevInSection .NextInSection }} &middot; {{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next &mdash; {{ .Title }}</a>{{ end }}
 </nav>
 {{ end }}
