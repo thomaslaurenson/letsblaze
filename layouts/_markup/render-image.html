@@ -1,1 +1,9 @@
-<img src="{{ .Destination }}" alt="{{ .Text }}" loading="lazy">
+{{ $img := .Page.Resources.Get .Destination }}
+<figure>
+  {{ if $img }}
+    <img src="{{ .Destination }}" alt="{{ .Text }}" width="{{ $img.Width }}" height="{{ $img.Height }}" loading="lazy">
+  {{ else }}
+    <img src="{{ .Destination }}" alt="{{ .Text }}" loading="lazy">
+  {{ end }}
+  {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
+</figure>

@@ -5,60 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
 
-  {{/* Meta description: page description → page summary → site description */}}
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ .Site.Params.description }}{{ end }}{{ end }}">
 
-  {{/* Canonical URL */}}
   <link rel="canonical" href="{{ .Permalink }}">
 
-  {{/* Open Graph */}}
   <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
   <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ .Site.Params.description }}{{ end }}{{ end }}">
   <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
   <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:site_name" content="{{ .Site.Title }}">
+  {{ with .Site.Params.ogImage }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+  {{ if and .IsPage (eq .Section "blog") }}
+  <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{ end }}
 
-  {{/* Feeds and discovery */}}
+  {{ with .Site.Params.author }}<meta name="author" content="{{ . }}">{{ end }}
+  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111111">
+
   {{ with .OutputFormats.Get "RSS" }}<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .Permalink }}">{{ end }}
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
   <link rel="icon" href="/favicon.ico">
 
-  {{/* letsblaze: all CSS inline — no external stylesheet, no JS
-       CSS registry: see project review plan for justification of every rule */}}
-  <style>
-    /* Skip link — keyboard navigation usability */
-    .skip-link { position: absolute; left: -9999px; top: 0; }
-    .skip-link:focus { left: 0; }
+  {{ block "head-extra" . }}{{ end }}
 
-    /* Body — readability essentials */
-    body { max-width: 65ch; margin: 0 auto; padding: 1rem; line-height: 1.6; }
-
-    /* Media — prevent overflow */
-    img { max-width: 100%; }
-
-    /* Tables — prevent layout breakage on small screens */
-    table { display: block; overflow-x: auto; }
-
-    /* Navigation — active page indicator */
-    [aria-current="page"] { font-weight: bold; }
-
-    /* Dark mode — follows system preference, considered essential usability */
-    @media (prefers-color-scheme: dark) {
-      body { background-color: #111; color: #ddd; }
-      a { color: #6ab0f5; }
-      a:visited { color: #c9a0f5; }
-      pre { background-color: #1e1e1e; }
-      code { background-color: #1e1e1e; color: #ddd; }
-      blockquote { border-left-color: #555; color: #aaa; }
-      details, summary { color: #ddd; }
-      mark { background-color: #5a4a00; color: #fff; }
-      table, th, td { border-color: #444; }
-    }
-  </style>
+  {{ partial "head-styles.html" . }}
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <header>
-    {{ if .IsHome }}<h1><a href="/">{{ .Site.Title }}</a></h1>{{ else }}<p><a href="/">{{ .Site.Title }}</a></p>{{ end }}
+    <h1><a href="/">{{ .Site.Title }}</a></h1>
     <nav aria-label="Main navigation">
       <ul>
         {{ range .Site.Menus.main }}
@@ -74,9 +51,9 @@
   <hr>
   <footer>
     <small>
-      &copy; {{ now.Year }}{{ with .Site.Params.author }} {{ . }}{{ end }} &middot;
-      Built with &#9749; and &#129302; &middot;
-      <a href="https://github.com/thomaslaurenson/letsblaze">letsblaze</a>
+      &copy; {{ now.Year }} {{ with .Site.Params.copyright }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}
+      {{ with .OutputFormats.Get "RSS" }} &middot; <a href="{{ .RelPermalink }}">RSS</a>{{ end }}
+      {{ if (.Site.Params.showThemeCredit | default true) }} &middot; Theme: <a href="https://github.com/thomaslaurenson/letsblaze">letsblaze</a>{{ end }}
     </small>
   </footer>
 </body>

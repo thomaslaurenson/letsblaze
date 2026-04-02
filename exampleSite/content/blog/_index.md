@@ -2,4 +2,4 @@
 title: "Blog"
 ---
 
-A collection of posts.
+Thoughts on the web, performance, and building things that last.

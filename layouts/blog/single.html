@@ -1,10 +1,10 @@
 {{ define "main" }}
-<article>
-  <h1>{{ .Title }}</h1>
-  <p>
-    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format .Site.Params.dateFormat }}</time>
-    {{ range .Params.tags }} &middot; <a href="/tags/{{ . | urlize }}/">{{ . }}</a>{{ end }}
-  </p>
+<article itemscope itemtype="https://schema.org/BlogPosting">
+  <h1 itemprop="headline">{{ .Title }}</h1>
+  <p><time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format .Site.Params.dateFormat }}</time></p>
+  <meta itemprop="dateModified" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{ if .GetTerms "tags" }}<p>{{ range .GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</p>{{ end }}
+  {{ with .Site.Params.author }}<address itemprop="author" itemscope itemtype="https://schema.org/Person"><a rel="author" itemprop="name">{{ . }}</a></address>{{ end }}
   <hr>
   {{ .Content }}
 </article>

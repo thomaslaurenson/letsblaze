@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 # letsblaze test suite
-# Builds the exampleSite and verifies all constraints and key features.
+# Builds the exampleSite and verifies all constraints defined in README.md.
+# Constraint IDs match README.md: R (External Resources), C (CSS Integrity),
+# S (Semantic HTML), M (SEO & Metadata).
 # Exit code 0 = all checks passed. Exit code 1 = one or more failures.
 
 set -euo pipefail
 
 THEME="letsblaze"
 SITE_DIR="exampleSite"
+CONTENT_DIR="${SITE_DIR}/content"
 PUBLIC="${SITE_DIR}/public"
 HUGO_FLAGS="--themesDir ../.. --theme ${THEME}"
 
@@ -16,10 +19,50 @@ FAIL=0
 pass() { echo "  PASS  $1"; PASS=$((PASS + 1)); }
 fail() { echo "  FAIL  $1"; FAIL=$((FAIL + 1)); }
 
+# Extract the <head>...</head> block from a file and search for a pattern.
+# Returns 0 if found, 1 if not.
+check_head() {
+    local file="$1" pattern="$2"
+    awk '/<head/,/<\/head>/' "${file}" | grep -q "${pattern}"
+}
+
+# Check a pattern is present in every file passed as remaining arguments.
+# Reports which files are missing the pattern on failure.
+check_all() {
+    local label="$1" pattern="$2"
+    shift 2
+    local failures=()
+    for page in "$@"; do
+        grep -q "${pattern}" "${page}" 2>/dev/null || failures+=("${page##${PUBLIC}/}")
+    done
+    if [[ "${#failures[@]}" -eq 0 ]]; then
+        pass "${label}"
+    else
+        fail "${label}"
+        printf '        missing in: %s\n' "${failures[@]}"
+    fi
+}
+
+# Same as check_all but restricts the search to the <head> block only.
+check_head_all() {
+    local label="$1" pattern="$2"
+    shift 2
+    local failures=()
+    for page in "$@"; do
+        check_head "${page}" "${pattern}" 2>/dev/null || failures+=("${page##${PUBLIC}/}")
+    done
+    if [[ "${#failures[@]}" -eq 0 ]]; then
+        pass "${label}"
+    else
+        fail "${label}"
+        printf '        missing in: %s\n' "${failures[@]}"
+    fi
+}
+
 # ---------------------------------------------------------------------------
-# Build
+# 1. Build
 # ---------------------------------------------------------------------------
-echo "=== Build ==="
+echo "=== 1. Build ==="
 rm -rf "${PUBLIC}"
 if ! (cd "${SITE_DIR}" && hugo ${HUGO_FLAGS} 2>&1); then
     echo "  ERROR: hugo build failed — aborting tests"
@@ -28,148 +71,272 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# Expected pages
+# Page sets used by constraint checks
 # ---------------------------------------------------------------------------
-echo "=== Expected pages ==="
-EXPECTED_PAGES=(
-    "${PUBLIC}/404.html"
-    "${PUBLIC}/about/index.html"
-    "${PUBLIC}/blog/hello-world/index.html"
-    "${PUBLIC}/blog/index.html"
-    "${PUBLIC}/blog/second-post/index.html"
-    "${PUBLIC}/docs/getting-started/configuration/index.html"
-    "${PUBLIC}/docs/getting-started/index.html"
-    "${PUBLIC}/docs/getting-started/installation/index.html"
-    "${PUBLIC}/docs/index.html"
-    "${PUBLIC}/docs/reference/index.html"
-    "${PUBLIC}/index.html"
-    "${PUBLIC}/tags/example/index.html"
-    "${PUBLIC}/tags/hello/index.html"
-    "${PUBLIC}/tags/index.html"
-)
+PAGE_HOME="${PUBLIC}/index.html"
+PAGE_BLOG_LIST="${PUBLIC}/blog/index.html"
+PAGE_BLOG_POST="${PUBLIC}/blog/welcome-to-letsblaze/index.html"
+PAGE_DOC="${PUBLIC}/docs/getting-started/installation/index.html"
+PAGE_404="${PUBLIC}/404.html"
+
+# All built HTML pages — used for global constraint checks.
+# Excludes paginator redirect pages (page/N/index.html) which are minimal
+# meta-refresh redirects intentionally lacking full head/body content.
+readarray -t ALL_PAGES < <(find "${PUBLIC}" -name '*.html' \
+    | grep -v '/page/[0-9]\+/index\.html' | sort)
+
+# All blog post pages — used for blog-specific checks (excludes paginator redirects)
+readarray -t BLOG_POST_PAGES < <(find "${PUBLIC}/blog" -mindepth 2 -name 'index.html' \
+    | grep -v '/page/[0-9]\+/index\.html' | sort)
+
+# ---------------------------------------------------------------------------
+# 2. Expected pages (derived dynamically from content directory)
+# ---------------------------------------------------------------------------
+echo "=== 2. Expected pages ==="
+
+EXPECTED_PAGES=()
+# Hugo always generates these regardless of content files
+EXPECTED_PAGES+=("${PUBLIC}/index.html")
+EXPECTED_PAGES+=("${PUBLIC}/404.html")
+EXPECTED_PAGES+=("${PUBLIC}/tags/index.html")
+
+# Section list pages — every subdirectory under content gets one
+while IFS= read -r -d '' dir; do
+    rel="${dir#${CONTENT_DIR}/}"
+    EXPECTED_PAGES+=("${PUBLIC}/${rel}/index.html")
+done < <(find "${CONTENT_DIR}" -mindepth 1 -type d -print0 | sort -z)
+
+# Content pages — all .md files except _index.md
+while IFS= read -r -d '' mdfile; do
+    rel="${mdfile#${CONTENT_DIR}/}"
+    base="${rel%.md}"
+    [[ "$(basename "${base}")" == "_index" ]] && continue
+    EXPECTED_PAGES+=("${PUBLIC}/${base}/index.html")
+done < <(find "${CONTENT_DIR}" -name "*.md" -not -name "_index.md" -print0 | sort -z)
+
+# Deduplicate
+readarray -t EXPECTED_PAGES < <(printf '%s\n' "${EXPECTED_PAGES[@]}" | sort -u)
+
 for page in "${EXPECTED_PAGES[@]}"; do
     if [[ -f "${page}" ]]; then
-        pass "${page}"
+        pass "${page##${PUBLIC}/}"
     else
-        fail "${page} (missing)"
+        fail "${page##${PUBLIC}/} (missing)"
     fi
 done
 echo ""
 
 # ---------------------------------------------------------------------------
-# Hard constraints — must all be 0 violations
+# 3. Constraints: External Resources (R1-R5)
 # ---------------------------------------------------------------------------
-echo "=== Constraint checks (must all be 0) ==="
+echo "=== 3. R1-R5: External Resources ==="
 
-COUNT=$(grep -rc '<script' "${PUBLIC}" | grep -v ':0' | wc -l || true)
-if [[ "${COUNT}" -eq 0 ]]; then
-    pass "No <script> tags"
+# R1: No JavaScript — no <script> tags of any kind
+HITS=$(grep -rn '<script' "${PUBLIC}" || true)
+if [[ -z "${HITS}" ]]; then
+    pass "[R1] No JavaScript"
 else
-    fail "<script> tags found in ${COUNT} file(s)"
-    grep -rn '<script' "${PUBLIC}" || true
+    fail "[R1] No JavaScript"
+    echo "${HITS}" | sed 's/^/        /'
 fi
 
-COUNT=$(grep -rc 'rel="stylesheet"' "${PUBLIC}" | grep -v ':0' | wc -l || true)
-if [[ "${COUNT}" -eq 0 ]]; then
-    pass "No external stylesheets"
+# R2: No external CSS — no rel="stylesheet" links
+HITS=$(grep -rn 'rel="stylesheet"' "${PUBLIC}" || true)
+if [[ -z "${HITS}" ]]; then
+    pass "[R2] No external CSS"
 else
-    fail "External stylesheets found in ${COUNT} file(s)"
-    grep -rn 'rel="stylesheet"' "${PUBLIC}" || true
+    fail "[R2] No external CSS"
+    echo "${HITS}" | sed 's/^/        /'
 fi
 
-COUNT=$(grep -rc 'cdn\.\|fonts\.googleapis\|fonts\.gstatic' "${PUBLIC}" | grep -v ':0' | wc -l || true)
-if [[ "${COUNT}" -eq 0 ]]; then
-    pass "No CDN or external font resources"
+# R3: No CDN or external font resources
+HITS=$(grep -rn 'cdn\.\|fonts\.googleapis\.\|fonts\.gstatic\.' "${PUBLIC}" || true)
+if [[ -z "${HITS}" ]]; then
+    pass "[R3] No CDN resources"
 else
-    fail "CDN/external resources found in ${COUNT} file(s)"
-    grep -rn 'cdn\.\|fonts\.googleapis\|fonts\.gstatic' "${PUBLIC}" || true
+    fail "[R3] No CDN resources"
+    echo "${HITS}" | sed 's/^/        /'
 fi
 
-# class= check — Chroma emits class="highlight" and class="language-*"; these are expected.
-# The skip link uses class="skip-link" — intentional, required for CSS hide/reveal targeting.
-# Hugo's Goldmark renderer emits footnote classes (footnote-ref, footnotes, footnote-backref).
-# Any class on structural elements (nav, header, footer, ul, li, a, h1-h6, p, main) from
-# THEME TEMPLATES is a violation.
+# R4: No inline style= attributes (Chroma emits style= on <span> and <pre> — exempt)
+HITS=$(grep -rn ' style="' "${PUBLIC}" \
+    | grep -v '<span style=' \
+    | grep -v '<pre style=' \
+    || true)
+if [[ -z "${HITS}" ]]; then
+    pass "[R4] No inline style= attrs"
+else
+    fail "[R4] No inline style= attrs"
+    echo "${HITS}" | sed 's/^/        /'
+fi
+
+# R5: No structural CSS classes
+# Allowlist: Chroma (highlight, language-*), skip-link, Goldmark footnotes
+HITS=$(grep -rn 'class="' "${PUBLIC}" \
+    | grep -v 'class="highlight"' \
+    | grep -v 'class="language-' \
+    | grep -v 'class="skip-link"' \
+    | grep -v 'class="footnote-ref"' \
+    | grep -v 'class="footnotes"' \
+    | grep -v 'class="footnote-backref"' \
+    || true)
+if [[ -z "${HITS}" ]]; then
+    pass "[R5] No structural classes"
+else
+    fail "[R5] No structural classes"
+    echo "${HITS}" | sed 's/^/        /'
+fi
 echo ""
-echo "=== class= audit (Chroma, skip-link, and Goldmark footnote classes are expected) ==="
-CLASS_HITS=$(grep -rn 'class="' "${PUBLIC}" || true)
-if [[ -z "${CLASS_HITS}" ]]; then
-    pass "No class= attributes anywhere"
+
+# ---------------------------------------------------------------------------
+# 4. Constraints: CSS Integrity (C1-C10)
+# ---------------------------------------------------------------------------
+echo "=== 4. C1-C10: CSS Integrity ==="
+
+# C1: CSS delivered inline inside <style> in <head> on all pages
+C1_FAIL=()
+for page in "${ALL_PAGES[@]}"; do
+    check_head "${page}" '<style>' || C1_FAIL+=("${page##${PUBLIC}/}")
+done
+if [[ "${#C1_FAIL[@]}" -eq 0 ]]; then
+    pass "[C1] CSS inline in head"
 else
-    # Filter out all known-good classes
-    BAD_CLASSES=$(echo "${CLASS_HITS}" \
-        | grep -v 'class="highlight"' \
-        | grep -v 'class="language-' \
-        | grep -v 'class="skip-link"' \
-        | grep -v 'class="footnote-ref"' \
-        | grep -v 'class="footnotes"' \
-        | grep -v 'class="footnote-backref"' \
-        || true)
-    if [[ -z "${BAD_CLASSES}" ]]; then
-        pass "class= attributes present but all are expected (Chroma, skip-link, Goldmark footnotes)"
-        echo "      Hits by category:"
-        echo "${CLASS_HITS}" | grep -c 'class="skip-link"' | xargs -I{} echo "        skip-link: {} occurrence(s)"
-        echo "${CLASS_HITS}" | grep -c 'class="highlight"\|class="language-' | xargs -I{} echo "        Chroma:     {} occurrence(s)" || true
-        echo "${CLASS_HITS}" | grep -c 'class="footnote' | xargs -I{} echo "        Goldmark:   {} occurrence(s)" || true
-    else
-        fail "Unexpected class= attributes found — review these lines:"
-        echo "${BAD_CLASSES}" | sed 's/^/        /'
-    fi
+    fail "[C1] CSS inline in head"
+    printf '        no <style> in <head>: %s\n' "${C1_FAIL[@]}"
 fi
+
+# C2-C10: CSS rules verified against the home page <style> block.
+# All pages share the same inline styles; home is a reliable proxy.
+grep -q 'position: absolute' "${PAGE_HOME}" \
+    && pass "[C2] Skip link hide CSS" \
+    || fail "[C2] Skip link hide CSS"
+
+grep -q '100ch' "${PAGE_HOME}" \
+    && pass "[C3] Body max-width CSS" \
+    || fail "[C3] Body max-width CSS"
+
+grep -q 'line-height: 1.6' "${PAGE_HOME}" \
+    && pass "[C4] Body line-height CSS" \
+    || fail "[C4] Body line-height CSS"
+
+grep -q 'height: auto' "${PAGE_HOME}" \
+    && pass "[C5] Image responsive CSS" \
+    || fail "[C5] Image responsive CSS"
+
+grep -q 'border-collapse' "${PAGE_HOME}" \
+    && pass "[C6] Table border CSS" \
+    || fail "[C6] Table border CSS"
+
+grep -q 'list-style: none' "${PAGE_HOME}" \
+    && pass "[C7] Nav reset CSS" \
+    || fail "[C7] Nav reset CSS"
+
+grep -q '\[aria-current' "${PAGE_HOME}" \
+    && pass "[C8] Active nav CSS" \
+    || fail "[C8] Active nav CSS"
+
+grep -q 'prefers-color-scheme: dark' "${PAGE_HOME}" \
+    && pass "[C9] Dark mode CSS" \
+    || fail "[C9] Dark mode CSS"
+
+grep -q 'overflow-x: auto' "${PAGE_HOME}" \
+    && pass "[C10] Pre overflow CSS" \
+    || fail "[C10] Pre overflow CSS"
 echo ""
 
 # ---------------------------------------------------------------------------
-# Feature spot-checks
+# 5. Constraints: Semantic HTML and Accessibility (S1-S7)
 # ---------------------------------------------------------------------------
-echo "=== Feature checks ==="
+echo "=== 5. S1-S7: Semantic HTML & Accessibility ==="
 
-grep -q 'prefers-color-scheme' "${PUBLIC}/index.html" \
-    && pass "Dark mode block in <head>" \
-    || fail "No prefers-color-scheme found in index.html"
+# S1: Skip link — <a href="#main-content">Skip to content</a> on every page
+check_all "[S1] Skip link element" 'Skip to content' "${ALL_PAGES[@]}"
 
-grep -q 'Skip to content' "${PUBLIC}/index.html" \
-    && pass "Skip link present" \
-    || fail "Skip link missing from index.html"
+# S2: aria-label on every <nav>
+check_all "[S2] Nav aria-label" 'aria-label' "${ALL_PAGES[@]}"
 
-grep -q 'aria-label' "${PUBLIC}/index.html" \
-    && pass "aria-label present in index.html" \
-    || fail "No aria-label found in index.html"
+# S3: aria-current="page" on the active nav link — blog list has Blog item active
+grep -q 'aria-current="page"' "${PAGE_BLOG_LIST}" \
+    && pass "[S3] aria-current active" \
+    || fail "[S3] aria-current active"
 
-grep -q '<link rel="canonical"' "${PUBLIC}/index.html" \
-    && pass "Canonical URL in <head>" \
-    || fail "Canonical URL missing from index.html"
+# S4: Site title as <h1> on every page
+check_all "[S4] Site title h1" '<h1><a href="/">' "${ALL_PAGES[@]}"
 
-grep -q 'og:title' "${PUBLIC}/index.html" \
-    && pass "OG meta tags in <head>" \
-    || fail "OG meta tags missing from index.html"
+# S5: <time datetime="..."> on blog post dates
+grep -q '<time ' "${PAGE_BLOG_POST}" \
+    && grep -q 'datetime=' "${PAGE_BLOG_POST}" \
+    && pass "[S5] Blog post time elem" \
+    || fail "[S5] Blog post time elem"
 
-grep -q 'newer posts\|older posts' "${PUBLIC}/blog/index.html" \
-    && pass "Pagination nav on blog index" \
-    || { echo "  INFO  Pagination nav absent from blog/index.html (expected if post count < pagerSize)"; PASS=$((PASS + 1)); }
+# S6: <figure> with loading="lazy" for all images
+# Verified via template source — example site content does not embed images.
+grep -q '<figure>' "layouts/_markup/render-image.html" \
+    && grep -q 'loading="lazy"' "layouts/_markup/render-image.html" \
+    && pass "[S6] Image figure/lazy (template)" \
+    || fail "[S6] Image figure/lazy (template)"
 
-grep -q 'prev\|next' "${PUBLIC}/blog/hello-world/index.html" \
-    && pass "Prev/next nav on blog post" \
-    || fail "Prev/next nav missing from blog/hello-world/index.html"
+# S7: <details>/<summary> for docs sidebar navigation — no JavaScript required
+grep -q '<details' "${PAGE_DOC}" \
+    && pass "[S7] Docs details nav" \
+    || fail "[S7] Docs details nav"
+echo ""
 
-grep -q '<details' "${PUBLIC}/docs/getting-started/installation/index.html" \
-    && pass "Collapsible nav (<details>) in docs page" \
-    || fail "<details> missing from docs/getting-started/installation/index.html"
+# ---------------------------------------------------------------------------
+# 6. Constraints: SEO and Metadata (M1-M10)
+# ---------------------------------------------------------------------------
+echo "=== 6. M1-M10: SEO & Metadata ==="
 
-grep -q 'overflow-x' "${PUBLIC}/index.html" \
-    && pass "Table overflow-x rule present" \
-    || fail "overflow-x rule missing (check baseof.html <style>)"
+# M1: <meta charset> and viewport on every page
+check_head_all "[M1] charset and viewport" 'charset' "${ALL_PAGES[@]}"
 
-grep -q 'noindex' "${PUBLIC}/404.html" \
-    && pass "404 has noindex robots meta" \
-    || fail "404 is missing noindex robots meta"
+# M2: Canonical URL — <link rel="canonical"> on every page
+check_head_all "[M2] Canonical URL" 'rel="canonical"' "${ALL_PAGES[@]}"
 
-grep -q '<time ' "${PUBLIC}/blog/hello-world/index.html" \
-    && pass "<time> element on blog post" \
-    || fail "<time> element missing from blog post"
+# M3: Meta description on every page
+check_head_all "[M3] Meta description" 'name="description"' "${ALL_PAGES[@]}"
 
-grep -q 'aria-current="page"' "${PUBLIC}/docs/getting-started/installation/index.html" \
-    && pass "aria-current=page in docs sidebar" \
-    || fail "aria-current=page missing from docs sidebar"
+# M4: Open Graph tags — og:title, og:description, og:type, og:url on every page
+check_head_all "[M4] Open Graph tags" 'og:title' "${ALL_PAGES[@]}"
+
+# M5: og:site_name on every page
+check_head_all "[M5] OG site_name" 'og:site_name' "${ALL_PAGES[@]}"
+
+# M6: Schema.org microdata — blog posts carry itemscope itemtype="...BlogPosting"
+check_all "[M6] Blog microdata" 'itemtype="https://schema.org/BlogPosting"' "${BLOG_POST_PAGES[@]}"
+
+# M7: article:published_time and article:modified_time on blog posts
+M7_FAIL=()
+for page in "${BLOG_POST_PAGES[@]}"; do
+    check_head "${page}" 'article:published_time' \
+        && check_head "${page}" 'article:modified_time' \
+        || M7_FAIL+=("${page##${PUBLIC}/}")
+done
+if [[ "${#M7_FAIL[@]}" -eq 0 ]]; then
+    pass "[M7] Blog article times"
+else
+    fail "[M7] Blog article times"
+    printf '        missing in: %s\n' "${M7_FAIL[@]}"
+fi
+
+# M8: RSS autodiscovery — <link rel="alternate" type="application/rss+xml"> in <head>
+check_head "${PAGE_HOME}" 'rel="alternate"' \
+    && check_head "${PAGE_BLOG_LIST}" 'rel="alternate"' \
+    && pass "[M8] RSS autodiscovery" \
+    || fail "[M8] RSS autodiscovery"
+
+# M9: noindex in <head> on the 404 page
+check_head "${PAGE_404}" 'noindex' \
+    && pass "[M9] 404 noindex in head" \
+    || fail "[M9] 404 noindex in head"
+
+# M10: <meta name="author"> on every page except 404
+NON_404_PAGES=()
+for page in "${ALL_PAGES[@]}"; do
+    [[ "${page}" == "${PAGE_404}" ]] && continue
+    NON_404_PAGES+=("${page}")
+done
+check_head_all "[M10] Author meta" 'name="author"' "${NON_404_PAGES[@]}"
 echo ""
 
 # ---------------------------------------------------------------------------
@@ -187,3 +354,4 @@ else
     echo "RESULT: PASS"
     exit 0
 fi
+

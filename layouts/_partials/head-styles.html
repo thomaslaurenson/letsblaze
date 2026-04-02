@@ -1,0 +1,49 @@
+{{/* letsblaze: all CSS inline — no external stylesheet, no JS
+     CSS registry: see letsblaze-plan.md for justification of every rule */}}
+<style>
+  /* Skip link — keyboard navigation usability */
+  .skip-link { position: absolute; left: -9999px; top: 0; }
+  .skip-link:focus { left: 0; }
+
+  /* Body — readability essentials */
+  body { max-width: 100ch; margin: 0 auto; padding: 1rem; line-height: 1.6; }
+
+  /* Images — responsive scaling and CLS prevention */
+  img { max-width: 100%; height: auto; }
+
+  /* Tables — readable borders and spacing */
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid; padding: 0.4rem 0.8rem; }
+  th { font-weight: bold; }
+
+  /* Table alignment — driven by Goldmark align attributes, not inline styles */
+  [align="left"]   { text-align: left; }
+  [align="center"] { text-align: center; }
+  [align="right"]  { text-align: right; }
+
+  /* Code blocks — horizontal scroll instead of clipping wide content */
+  pre { overflow-x: auto; }
+
+  /* Nav reset — remove browser bullet/indent defaults */
+  nav ul { list-style: none; margin: 0; padding: 0; }
+
+  /* Main nav — horizontal inline links */
+  header nav ul li { display: inline; }
+  header nav ul li + li::before { content: " · "; }
+
+  /* Navigation — active page indicator */
+  [aria-current="page"] { font-weight: bold; }
+
+  /* Dark mode — follows system preference, considered essential usability */
+  @media (prefers-color-scheme: dark) {
+    body { background-color: #111; color: #ddd; }
+    a { color: #6ab0f5; }
+    a:visited { color: #c9a0f5; }
+    pre { background-color: #1e1e1e; }
+    code { background-color: #1e1e1e; color: #ddd; }
+    blockquote { border-left-color: #555; color: #aaa; }
+    details, summary { color: #ddd; }
+    mark { background-color: #5a4a00; color: #fff; }
+    table, th, td { border-color: #444; }
+  }
+</style>

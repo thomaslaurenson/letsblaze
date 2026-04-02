@@ -10,9 +10,6 @@
       </ul>
     </nav>
   </details>
-  {{/* Note: sidebar assumes max two levels of doc nesting (section → pages).
-       A three-level hierarchy (section → subsection → pages) will not render
-       the third level. This is a known limitation. */}}
   {{ range .Parent.Parent.Sections }}
     <details>
       <summary>{{ .Title }}</summary>

@@ -1,13 +1,18 @@
 baseURL = "https://letsblaze.thomaslaurenson.com"
-languageCode = "en-us"
-title = "letsblaze example"
+languageCode = "en-US"
+title = "letsblaze"
 enableEmoji = true
+enableGitInfo = true
 theme = "letsblaze"
 themesDir = "../.."
+
+disableHugoGeneratorInject = false  # intentional — we like Hugo
 
 # Pagination: pagerSize replaces the old top-level `paginate` key (changed ~v0.128.0)
 [pagination]
   pagerSize = 10
+
+summaryLength = 20  # word count for auto-generated post summaries (default 70)
 
 [markup.goldmark.renderer]
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
@@ -20,10 +25,13 @@ themesDir = "../.."
   # See https://xyproto.github.io/splash/docs/ for available styles.
 
 [params]
-  author = "Example Author"
-  description = "A minimal example site built with the letsblaze Hugo theme."
+  author = "Thomas Laurenson"
+  copyright = "Thomas Laurenson"
+  description = "A blazingly fast, no-JS Hugo theme built for blogs and docs."
   dateFormat = "2006-01-02" # Go reference time format
   homepagePostCount = 5     # number of posts shown on the homepage
+  showThemeCredit = true
+  # ogImage = "/og-image.png"  # uncomment and add image to static/ to enable OG images
 
 [[menus.main]]
   name = "Blog"

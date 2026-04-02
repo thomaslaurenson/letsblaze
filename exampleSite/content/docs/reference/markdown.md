@@ -1,97 +1,113 @@
 ---
-title: "Lets Blaze Markdown Syntax"
-date: 2024-01-01
-summary: "A reference for all Markdown elements supported by the letsblaze theme, including headings, tables, code blocks, and shortcodes."
+title: "Markdown Reference"
+date: 2026-01-01
 draft: false
+description: "A complete reference for Markdown syntax supported by letsblaze, including headings, tables, code, lists, and blockquotes."
 ---
 
-This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.
+A reference for all Markdown elements supported by letsblaze. Use this page
+to verify rendering before writing content.
 
 ## Headings
 
-The following HTML `<h2>` to `<h6>` elements represent the section headings available in content. `<h1>` is reserved for the page title, which the theme renders automatically.
+`<h1>` is reserved for the page title. Use `<h2>` to `<h6>` in content.
 
 ## H2
-
 ### H3
-
 #### H4
-
 ##### H5
-
 ###### H6
 
 ## Paragraph
 
-Xerum, quo qui aut unt expliquam qui dolut labo. Aque venitatiusda cum, voluptionse latur sitiae dolessi aut parist aut dollo enim qui voluptate ma dolestendit peritin re plis aut quas inctum laceat est volestemque commosa as cus endigna tectur, offic to cor sequas etum rerum idem sintibus eiur? Quianimin porecus evelectur, cum que nis nust voloribus ratem aut omnimi, sitatur? Quiatem. Nam, omnis sum am facea corem alique molestrunt et eos evelece arcillit ut aut eos eos nus, sin conecerem erum fuga. Ri oditatquam, ad quibus unda veliamenimin cusam et facea ipsamus es exerum sitate dolores editium rerore eost, temped molorro ratiae volorro te reribus dolorer sperchicium faceata tiustia prat.
-
-Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sapicia is sinveli squiatum, core et que aut hariosam ex eat.
+Standard paragraph text. Separate paragraphs with a blank line. Line breaks
+within a paragraph are collapsed to a space unless you end a line with two
+spaces or a backslash.
 
 ## Blockquotes
 
-The blockquote element represents content that is quoted from another source, optionally with a citation which must be within a `footer` or `cite` element, and optionally with in-line changes such as annotations and abbreviations.
+> Single-level blockquote.
 
-#### Blockquote without attribution
-
-> Tiam, ad mint andaepu dandae nostion secatur sequo quae.
-> **Note** that you can use _Markdown syntax_ within a blockquote.
-
-#### Blockquote with attribution
-
-> Don't communicate by sharing memory, share memory by communicating.
+> Nested blockquote.
 >
-> — <cite>Rob Pike[^1]</cite>
+> > Inner level.
 
-[^1]: The above quote is excerpted from Rob Pike's [talk](https://www.youtube.com/watch?v=PAAkCSZUG1c) during Gopherfest, November 18, 2015.
+With attribution:
 
-## Tables
+> Do one thing and do it well.
+>
+> — <cite>Unix philosophy</cite>
 
-Tables aren't part of the core Markdown spec, but Hugo supports them out-of-the-box.
+## Lists
 
-| Name  | Age |
-| ----- | --- |
-| Bob   | 27  |
-| Alice | 23  |
+**Ordered:**
 
-#### Inline Markdown within tables
+1. First
+2. Second
+3. Third
 
-| Italics   | Bold     | Code   |
-| --------- | -------- | ------ |
-| _italics_ | **bold** | `code` |
+**Unordered:**
 
-## List Types
+- Item
+- Item
+- Item
 
-#### Ordered List
-
-1. First item
-2. Second item
-3. Third item
-
-#### Unordered List
-
-- List item
-- Another item
-- And another item
-
-#### Nested Unordered list
+**Nested:**
 
 - Fruit
   - Apple
   - Orange
-  - Banana
 - Dairy
   - Milk
   - Cheese
 
-#### Nested Ordered list
+## Code
 
-1. Fruit
-    - Apple
-    - Orange
-    - Banana
-2. Dairy
-    1. Milk
-    2. Cheese
-3. Third item
-    1. Sub One
-    2. Sub Two
+Inline: `const x = 42`
+
+Fenced block:
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+```
+
+## Tables
+
+| Column A | Column B | Column C |
+| :------- | :------: | -------: |
+| Left     | Centre   | Right    |
+| aligned  | aligned  | aligned  |
+
+## Horizontal rule
+
+---
+
+## Links
+
+[Inline link](https://example.com)
+
+[Link with title](https://example.com "Title text")
+
+## Images
+
+```markdown
+![Alt text](image.jpg)
+![Alt text with caption](image.jpg "Caption text")
+```
+
+## Footnotes
+
+Text with a footnote.[^note]
+
+[^note]: Footnote content renders at the bottom of the page.
+
+## Inline formatting
+
+| Style | Syntax | Output |
+|-------|--------|--------|
+| Bold | `**text**` | **text** |
+| Italic | `_text_` | _text_ |
+| Strikethrough | `~~text~~` | ~~text~~ |
+| Inline code | `` `code` `` | `code` |

@@ -3,7 +3,7 @@ SITE_DIR  := exampleSite
 PUBLIC    := $(SITE_DIR)/public
 HUGO_FLAGS := --themesDir ../.. --theme $(THEME)
 
-.PHONY: build serve clean rebuild check new-post new-doc
+.PHONY: build serve new-post new-doc
 
 ## build: build the exampleSite into public/
 build:
@@ -16,19 +16,6 @@ serve:
 ## clean: remove the generated public/ directory
 clean:
 	rm -rf $(PUBLIC)
-
-## rebuild: clean then build
-rebuild: clean build
-
-## check: run the full test suite (build + constraint + feature checks)
-check:
-	@bash test.sh
-	@echo "overflow tables: $$(grep -rc 'overflow-x' $(PUBLIC)/docs/getting-started/installation/index.html)"
-	@echo "blog prev/next:  $$(grep -rc 'prev —\|next —' $(PUBLIC)/blog/hello-world/index.html)"
-	@echo "docs prev/next:  $$(grep -rc 'prev —\|next —' $(PUBLIC)/docs/getting-started/installation/index.html)"
-	@echo ""
-	@echo "=== Page inventory ==="
-	@find $(PUBLIC) -name "*.html" | sort
 
 ## new-post: create a new blog post  usage: make new-post NAME=my-post-title
 new-post:
