@@ -59,9 +59,7 @@ check_head_all() {
     fi
 }
 
-# ---------------------------------------------------------------------------
 # 1. Build
-# ---------------------------------------------------------------------------
 echo "=== 1. Build ==="
 rm -rf "${PUBLIC}"
 if ! (cd "${SITE_DIR}" && hugo ${HUGO_FLAGS} 2>&1); then
@@ -70,9 +68,7 @@ if ! (cd "${SITE_DIR}" && hugo ${HUGO_FLAGS} 2>&1); then
 fi
 echo ""
 
-# ---------------------------------------------------------------------------
 # Page sets used by constraint checks
-# ---------------------------------------------------------------------------
 PAGE_HOME="${PUBLIC}/index.html"
 PAGE_BLOG_LIST="${PUBLIC}/blog/index.html"
 PAGE_BLOG_POST="${PUBLIC}/blog/welcome-to-letsblaze/index.html"
@@ -89,9 +85,7 @@ readarray -t ALL_PAGES < <(find "${PUBLIC}" -name '*.html' \
 readarray -t BLOG_POST_PAGES < <(find "${PUBLIC}/blog" -mindepth 2 -name 'index.html' \
     | grep -v '/page/[0-9]\+/index\.html' | sort)
 
-# ---------------------------------------------------------------------------
 # 2. Expected pages (derived dynamically from content directory)
-# ---------------------------------------------------------------------------
 echo "=== 2. Expected pages ==="
 
 EXPECTED_PAGES=()
@@ -126,9 +120,7 @@ for page in "${EXPECTED_PAGES[@]}"; do
 done
 echo ""
 
-# ---------------------------------------------------------------------------
 # 3. Constraints: External Resources (R1-R5)
-# ---------------------------------------------------------------------------
 echo "=== 3. R1-R5: External Resources ==="
 
 # R1: No JavaScript — no <script> tags of any kind
@@ -188,9 +180,7 @@ else
 fi
 echo ""
 
-# ---------------------------------------------------------------------------
 # 4. Constraints: CSS Integrity (C1-C10)
-# ---------------------------------------------------------------------------
 echo "=== 4. C1-C10: CSS Integrity ==="
 
 # C1: CSS delivered inline inside <style> in <head> on all pages
@@ -244,9 +234,7 @@ grep -q 'overflow-x: auto' "${PAGE_HOME}" \
     || fail "[C10] Pre overflow CSS"
 echo ""
 
-# ---------------------------------------------------------------------------
 # 5. Constraints: Semantic HTML and Accessibility (S1-S7)
-# ---------------------------------------------------------------------------
 echo "=== 5. S1-S7: Semantic HTML & Accessibility ==="
 
 # S1: Skip link — <a href="#main-content">Skip to content</a> on every page
@@ -282,9 +270,7 @@ grep -q '<details' "${PAGE_DOC}" \
     || fail "[S7] Docs details nav"
 echo ""
 
-# ---------------------------------------------------------------------------
 # 6. Constraints: SEO and Metadata (M1-M10)
-# ---------------------------------------------------------------------------
 echo "=== 6. M1-M10: SEO & Metadata ==="
 
 # M1: <meta charset> and viewport on every page
@@ -339,9 +325,7 @@ done
 check_head_all "[M10] Author meta" 'name="author"' "${NON_404_PAGES[@]}"
 echo ""
 
-# ---------------------------------------------------------------------------
 # Summary
-# ---------------------------------------------------------------------------
 echo "=== Summary ==="
 echo "  Passed: ${PASS}"
 echo "  Failed: ${FAIL}"
@@ -354,4 +338,3 @@ else
     echo "RESULT: PASS"
     exit 0
 fi
-

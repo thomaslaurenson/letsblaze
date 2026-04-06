@@ -12,13 +12,90 @@ letsblaze is built around one principle: **the fastest resource is one that was 
 - :cloud: No CDN calls
 - :rocket: Plain HTML with a single inline `<style>`
 
+## Installation
+
+letsblaze requires Hugo **0.134.0 or later**.
+
+### Option 1 — Git submodule (recommended)
+
+Add letsblaze and a git submodule:
+
+```bash
+git submodule add https://github.com/thomaslaurenson/letsblaze themes/letsblaze
+```
+
+Then set the theme in your `hugo.toml`:
+
+```toml
+theme = "letsblaze"
+```
+
+To update the theme later:
+
+```bash
+git submodule update --remote themes/letsblaze
+```
+
+### Option 2 — Manual clone
+
+This method is beginner-friendly and has no Git dependency management.
+
+```bash
+git clone https://github.com/thomaslaurenson/letsblaze themes/letsblaze
+```
+
+Then set the theme in your `hugo.toml`:
+
+```toml
+theme = "letsblaze"
+```
+
+To update, delete the folder and clone again, or pull updates:
+
+```bash
+git pull
+```
+
+### Option 3 — Hugo Modules
+
+Requires Go to be installed. Then use `hugo mod` command to add letsblaze theme:
+
+```bash
+hugo mod get github.com/thomaslaurenson/letsblaze
+```
+
+Then set the theme in your `hugo.toml`:
+
+```toml
+[module]
+  [[module.imports]]
+    path = "github.com/thomaslaurenson/letsblaze"
+```
+
+### Logo (optional)
+
+To use a custom logo instead of the plain text site title, create `layouts/partials/logo.html` in your site (not in the theme). Inline SVG is recommended — it requires no extra HTTP request and stays consistent with the theme's no-external-resources philosophy.
+
+Example `layouts/partials/logo.html`:
+
+```html
+<a href="/">
+  <svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" aria-label="{{ .Site.Title }}">
+    <!-- your SVG content here -->
+  </svg>
+</a>
+```
+
 ## Constraints
 
-Every design decision is governed by a numbered constraint. These identifiers are used in
-`scripts/test.sh` so test failures trace directly to this document.
+Every design decision is governed by a numbered constraint. These identifiers are used in `scripts/test.sh` so test failures trace directly to this document.
 
 Constraints are grouped by category with a category prefix:
-**R** = External Resources, **C** = CSS Integrity, **S** = Semantic HTML, **M** = SEO & Metadata
+
+- **R**: External Resources
+- **C**: CSS Integrity
+- **S**: Semantic HTML
+- **M**: SEO & Metadata
 
 ### External Resources
 
@@ -55,10 +132,15 @@ Every rule has an explicit justification.
 | S1 | **Skip link** — `<a href="#main-content">Skip to content</a>` on every page |
 | S2 | **`aria-label` on every `<nav>`** |
 | S3 | **`aria-current="page"` on the active nav link** |
-| S4 | **Site title as `<h1>`** on every page |
+| S4 | **Site title as `<p>`** on every page — reserves `<h1>` for page content. Optional: create `layouts/partials/logo.html` to render a custom logo (inline SVG recommended — no HTTP fetch) in place of the text title. |
 | S5 | **`<time datetime="...">`** on blog post dates |
 | S6 | **`<figure>` with `loading="lazy"`** for all images |
 | S7 | **`<details>`/`<summary>`** for docs sidebar navigation — no JavaScript required |
+
+> **Docs hierarchy:** The docs sidebar template assumes a two-level structure:
+> `/docs/<section>/<page>/`. Structures shallower or deeper than two levels
+> will produce incomplete sidebar navigation. Hugo will emit a build warning
+> if a docs page is detected more than two levels deep.
 
 ### SEO and Metadata
 
