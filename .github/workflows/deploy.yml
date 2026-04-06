@@ -3,7 +3,7 @@ name: Deploy exampleSite
 on:
   push:
     branches:
-      - exampleSite
+      - main
 
 permissions:
   contents: read
