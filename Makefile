@@ -3,7 +3,7 @@ SITE_DIR  := exampleSite
 PUBLIC    := $(SITE_DIR)/public
 HUGO_FLAGS := --themesDir ../.. --theme $(THEME)
 
-.PHONY: build serve new_post new_doc test help
+.PHONY: build serve new_post new_doc test push_example help
 
 ## build: build the exampleSite into public/
 build:
@@ -32,3 +32,15 @@ test:
 ## help: list available targets
 help:
 	@grep -E '^## ' Makefile | sed 's/## //'
+
+## push_example: run tests, rebase exampleSite branch on main, and push
+push_example:
+	@echo "Running tests before push..."
+	@bash scripts/test.sh || (echo "Tests failed — aborting push_example"; exit 1)
+	@echo "Tests passed. Rebasing exampleSite branch on main..."
+	@git checkout exampleSite
+	@git rebase main
+	@echo "Pushing exampleSite branch..."
+	@git push origin exampleSite --force-with-lease
+	@git checkout main
+	@echo "Done. exampleSite branch is up to date."
