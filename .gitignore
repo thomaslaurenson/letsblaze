@@ -1,5 +1,6 @@
 # CUSTOM
 /exampleSite/public/
+exampleSite/.hugo_build.lock
 
 # Generated files by hugo
 /public/
