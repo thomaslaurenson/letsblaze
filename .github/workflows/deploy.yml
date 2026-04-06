@@ -31,12 +31,12 @@ jobs:
           BASE_URL="https://github.com/gohugoio/hugo/releases/download"
           curl -fsSL \
             "$BASE_URL/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz" \
-            -o hugo.tar.gz
+            -o "hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
           curl -fsSL \
             "$BASE_URL/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_checksums.txt" \
             -o hugo_checksums.txt
           grep "hugo_${HUGO_VERSION}_linux-amd64.tar.gz" hugo_checksums.txt | sha256sum --check --status
-          tar -xf hugo.tar.gz hugo
+          tar -xf "hugo_${HUGO_VERSION}_linux-amd64.tar.gz" hugo
           sudo install -m 0755 hugo /usr/local/bin/hugo
           hugo version
 
