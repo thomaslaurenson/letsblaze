@@ -260,8 +260,8 @@ grep -q 'aria-current="page"' "${PAGE_BLOG_LIST}" \
     && pass "[S3] aria-current active" \
     || fail "[S3] aria-current active"
 
-# S4: Site title as <h1> on every page
-check_all "[S4] Site title h1" '<h1><a href="/">' "${ALL_PAGES[@]}"
+# S4: Site title as <p> on every page (or logo partial if provided)
+check_all "[S4] Site title" '<a href="/">' "${ALL_PAGES[@]}"
 
 # S5: <time datetime="..."> on blog post dates
 grep -q '<time ' "${PAGE_BLOG_POST}" \

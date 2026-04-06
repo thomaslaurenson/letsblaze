@@ -3,7 +3,7 @@
   {{ if gt $i 0 }}<hr>{{ end }}
   <article>
     <h2><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h2>
-    <p>{{ range $page.GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</p>
+    {{ if $page.GetTerms "tags" }}<p>{{ range $page.GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</p>{{ end }}
     <p>{{ $page.Summary }}</p>
   </article>
 {{ end }}

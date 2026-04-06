@@ -1,5 +1,11 @@
 {{ define "main" }}
-<aside>
+{{/* letsblaze: docs sidebar assumes exactly two levels of hierarchy:
+     /docs/<section>/<page>. If your docs structure is shallower or deeper
+     than two levels, navigation will be incomplete. See README for details. */}}
+{{ if not .Parent.Parent.Parent.IsHome }}
+  {{ warnf "letsblaze: docs page %q is more than two levels deep — sidebar navigation may be incomplete. See README constraint S7." .RelPermalink }}
+{{ end }}
+<aside aria-label="Page sidebar">
   <details open>
     <summary>In this section</summary>
     <nav aria-label="Section navigation">
