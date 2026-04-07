@@ -124,6 +124,7 @@ Every rule has an explicit justification.
 | C8  | **`[aria-current="page"] { font-weight: bold }`** | Active-link indicator without a class |
 | C9  | **Dark mode via `prefers-color-scheme: dark`** | Follows OS preference — no JavaScript, no toggle, no cookie |
 | C10 | **`pre { overflow-x: auto }`** | Wide code blocks scroll horizontally instead of being clipped |
+| C11 | **`body { font-size: 18px }`** | Browser default (16px) is too small for comfortable long-form reading |
 
 ### Semantic HTML and Accessibility
 

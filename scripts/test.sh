@@ -187,8 +187,8 @@ else
 fi
 echo ""
 
-# 4. Constraints: CSS Integrity (C1-C10)
-echo "=== 4. C1-C10: CSS Integrity ==="
+# 4. Constraints: CSS Integrity (C1-C11)
+echo "=== 4. C1-C11: CSS Integrity ==="
 
 # C1: CSS delivered inline inside <style> in <head> on all pages
 C1_FAIL=()
@@ -239,6 +239,10 @@ grep -q 'prefers-color-scheme: dark' "${PAGE_HOME}" \
 grep -q 'overflow-x: auto' "${PAGE_HOME}" \
     && pass "[C10] Pre overflow CSS" \
     || fail "[C10] Pre overflow CSS"
+
+grep -q 'font-size: 18px' "${PAGE_HOME}" \
+    && pass "[C11] Body font-size CSS" \
+    || fail "[C11] Body font-size CSS"
 echo ""
 
 # 5. Constraints: Semantic HTML and Accessibility (S1-S7)

@@ -1,18 +1,17 @@
 baseURL = "https://letsblaze.thomaslaurenson.com"
 languageCode = "en-US"
 title = "letsblaze"
-enableEmoji = true
-enableGitInfo = true
 theme = "letsblaze"
 themesDir = "../.."
+
+enableEmoji = true
+enableGitInfo = true
 
 disableHugoGeneratorInject = false  # intentional — we like Hugo
 
 # Pagination: pagerSize replaces the old top-level `paginate` key (changed ~v0.128.0)
 [pagination]
   pagerSize = 10
-
-summaryLength = 20  # word count for auto-generated post summaries (default 70)
 
 [permalinks]
   blog = "/blog/:slug/"
