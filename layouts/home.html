@@ -3,10 +3,11 @@
 {{ $count := .Site.Params.homepagePostCount | default 5 }}
 {{ $posts := (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
 <section aria-label="Recent posts">
-  {{ range first $count $posts }}
+  {{ range $i, $post := first $count $posts }}
+    {{ if gt $i 0 }}<hr>{{ end }}
     <article>
-      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-      <p>{{ .Summary }}</p>
+      <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
+      <p>{{ $post.Summary }}</p>
     </article>
   {{ end }}
 </section>

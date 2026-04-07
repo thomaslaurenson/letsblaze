@@ -14,6 +14,9 @@ disableHugoGeneratorInject = false  # intentional — we like Hugo
 
 summaryLength = 20  # word count for auto-generated post summaries (default 70)
 
+[permalinks]
+  blog = "/blog/:slug/"
+
 [markup.goldmark.renderer]
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
 

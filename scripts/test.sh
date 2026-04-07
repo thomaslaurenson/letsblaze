@@ -101,10 +101,17 @@ while IFS= read -r -d '' dir; do
 done < <(find "${CONTENT_DIR}" -mindepth 1 -type d -print0 | sort -z)
 
 # Content pages — all .md files except _index.md
+# Hugo automatically strips a leading YYYY-MM-DD- date prefix from the slug,
+# so derive the expected output path from the slug-form name, not the raw filename.
 while IFS= read -r -d '' mdfile; do
     rel="${mdfile#${CONTENT_DIR}/}"
     base="${rel%.md}"
     [[ "$(basename "${base}")" == "_index" ]] && continue
+    dir="$(dirname "${base}")"
+    name="$(basename "${base}")"
+    # Strip YYYY-MM-DD- prefix if present (mirrors Hugo's automatic slug behaviour)
+    name="${name#[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-}"
+    [[ "${dir}" == "." ]] && base="${name}" || base="${dir}/${name}"
     EXPECTED_PAGES+=("${PUBLIC}/${base}/index.html")
 done < <(find "${CONTENT_DIR}" -name "*.md" -not -name "_index.md" -print0 | sort -z)
 

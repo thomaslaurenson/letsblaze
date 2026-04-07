@@ -1,6 +1,6 @@
 ---
 title: "Welcome to letsblaze"
-date: 2026-01-01
+date: 2026-03-15
 draft: false
 tags: ["letsblaze", "performance", "html"]
 description: "Why letsblaze exists — a Hugo theme built on the principle that the fastest resource is one that was never requested."
