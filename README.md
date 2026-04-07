@@ -119,7 +119,7 @@ Every rule has an explicit justification.
 | C3  | **`body { max-width: 100ch }`** | Prevents unreadable line lengths on wide viewports |
 | C4  | **`body { line-height: 1.6 }`** | Browser default is too tight for comfortable reading |
 | C5  | **`img { max-width: 100%; height: auto }`** | Responsive images; `height: auto` prevents CLS alongside explicit `width`/`height` attributes |
-| C6  | **`table { border-collapse: collapse }`** | Readable table borders without external classes |
+| C6  | **`table { border-collapse: collapse }`** | `display: block; overflow-x: auto` confines horizontal scroll to the table itself — page never scrolls sideways; `display: block` is required to make `overflow-x` take effect on table elements |
 | C7  | **`nav ul { list-style: none }`** | Removes browser bullet and indent defaults from all nav lists |
 | C8  | **`[aria-current="page"] { font-weight: bold }`** | Active-link indicator without a class |
 | C9  | **Dark mode via `prefers-color-scheme: dark`** | Follows OS preference — no JavaScript, no toggle, no cookie |
