@@ -1,10 +1,27 @@
 {{ define "main" }}
+{{ if not .Parent.IsHome }}
+<nav aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></li>
+    <li><span aria-current="page">{{ .Title }}</span></li>
+  </ol>
+</nav>
+{{ end }}
 <article>
   <h1>{{ .Title }}</h1>
-  <ul>
-    {{ range .Pages }}
-      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-    {{ end }}
-  </ul>
+  {{ .Content }}
+  {{ if .Parent.IsHome }}
+    <ul>
+      {{ range .Sections }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      {{ end }}
+    </ul>
+  {{ else }}
+    <ul>
+      {{ range .Pages }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      {{ end }}
+    </ul>
+  {{ end }}
 </article>
 {{ end }}

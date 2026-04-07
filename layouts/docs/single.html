@@ -1,34 +1,17 @@
 {{ define "main" }}
-{{/* letsblaze: docs sidebar assumes exactly two levels of hierarchy:
+{{/* letsblaze: docs navigation assumes exactly two levels of hierarchy:
      /docs/<section>/<page>. If your docs structure is shallower or deeper
      than two levels, navigation will be incomplete. See README for details. */}}
 {{ if not .Parent.Parent.Parent.IsHome }}
-  {{ warnf "letsblaze: docs page %q is more than two levels deep — sidebar navigation may be incomplete. See README constraint S7." .RelPermalink }}
+  {{ warnf "letsblaze: docs page %q is more than two levels deep — breadcrumb navigation may be incomplete. See README constraint S7." .RelPermalink }}
 {{ end }}
-<aside aria-label="Page sidebar">
-  <details open>
-    <summary>In this section</summary>
-    <nav aria-label="Section navigation">
-      <ul>
-        {{ range .Parent.Pages }}
-          <li><a href="{{ .RelPermalink }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>{{ .Title }}</a></li>
-        {{ end }}
-      </ul>
-    </nav>
-  </details>
-  {{ range .Parent.Parent.Sections }}
-    <details>
-      <summary>{{ .Title }}</summary>
-      <nav aria-label="{{ .Title }} navigation">
-        <ul>
-          {{ range .Pages }}
-            <li><a href="{{ .RelPermalink }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>{{ .Title }}</a></li>
-          {{ end }}
-        </ul>
-      </nav>
-    </details>
-  {{ end }}
-</aside>
+<nav aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{{ .Parent.Parent.RelPermalink }}">{{ .Parent.Parent.Title }}</a></li>
+    <li><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></li>
+    <li><span aria-current="page">{{ .Title }}</span></li>
+  </ol>
+</nav>
 <article>
   <h1>{{ .Title }}</h1>
   {{ .Content }}

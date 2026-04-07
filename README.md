@@ -135,11 +135,11 @@ Every rule has an explicit justification.
 | S4 | **Site title as `<p>`** on every page — reserves `<h1>` for page content. Optional: create `layouts/partials/logo.html` to render a custom logo (inline SVG recommended — no HTTP fetch) in place of the text title. |
 | S5 | **`<time datetime="...">`** on blog post dates |
 | S6 | **`<figure>` with `loading="lazy"`** for all images |
-| S7 | **`<details>`/`<summary>`** for docs sidebar navigation — no JavaScript required |
+| S7 | **Breadcrumb navigation** — `<nav aria-label="Breadcrumb">` with `<ol>` on every docs page; section tab strip with `<nav aria-label="Docs sections">` on every docs page |
 
-> **Docs hierarchy:** The docs sidebar template assumes a two-level structure:
+> **Docs hierarchy:** The docs templates assume a two-level structure:
 > `/docs/<section>/<page>/`. Structures shallower or deeper than two levels
-> will produce incomplete sidebar navigation. Hugo will emit a build warning
+> will produce incomplete breadcrumb and section navigation. Hugo will emit a build warning
 > if a docs page is detected more than two levels deep.
 
 ### SEO and Metadata

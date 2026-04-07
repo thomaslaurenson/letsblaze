@@ -264,10 +264,12 @@ grep -q '<figure>' "layouts/_markup/render-image.html" \
     && pass "[S6] Image figure/lazy (template)" \
     || fail "[S6] Image figure/lazy (template)"
 
-# S7: <details>/<summary> for docs sidebar navigation — no JavaScript required
-grep -q '<details' "${PAGE_DOC}" \
-    && pass "[S7] Docs details nav" \
-    || fail "[S7] Docs details nav"
+# S7: Breadcrumb on docs section/page; section list on docs root and section index
+PAGE_DOC_SECTION="${PUBLIC}/docs/getting-started/index.html"
+grep -q 'aria-label="Breadcrumb"' "${PAGE_DOC}" \
+    && grep -q 'aria-label="Breadcrumb"' "${PAGE_DOC_SECTION}" \
+    && pass "[S7] Docs breadcrumb navigation" \
+    || fail "[S7] Docs breadcrumb navigation"
 echo ""
 
 # 6. Constraints: SEO and Metadata (M1-M10)
