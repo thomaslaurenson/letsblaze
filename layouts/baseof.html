@@ -43,7 +43,7 @@
     <nav aria-label="Main navigation">
       <ul>
         {{ range .Site.Menus.main }}
-          <li><a href="{{ .URL }}"{{ if eq $.RelPermalink .URL }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
+          <li><a href="{{ .URL }}"{{ if or (eq $.RelPermalink .URL) (and (ne .URL "/") (hasPrefix $.RelPermalink .URL)) }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
         {{ end }}
       </ul>
     </nav>

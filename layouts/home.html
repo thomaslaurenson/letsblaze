@@ -7,7 +7,9 @@
     {{ if gt $i 0 }}<hr>{{ end }}
     <article>
       <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
-      <p>{{ $post.Summary }}</p>
+      <!-- By default .Summary include all content, so strip pre (code) and table
+      (table) tags from content, escape it and plainify to remove style (e.g., h1) -->
+       <p>{{ $post.Summary | replaceRE `(?s)<(pre|table)[^>]*>.*?</(pre|table)>` "" | safeHTML | plainify}}</p>
     </article>
   {{ end }}
 </section>

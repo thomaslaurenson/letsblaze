@@ -3,7 +3,9 @@
   {{ if gt $i 0 }}<hr>{{ end }}
   <article>
     <h2><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h2>
-    <p>{{ $page.Summary }}</p>
+    <!-- By default .Summary include all content, so strip pre (code) and table
+    (table) tags from content, escape it and plainify to remove style (e.g., h1) -->
+    <p>{{ $page.Summary | replaceRE `(?s)<(pre|table)[^>]*>.*?</(pre|table)>` "" | safeHTML | plainify}}</p>
   </article>
 {{ end }}
 {{ if gt $paginator.TotalPages 1 }}
