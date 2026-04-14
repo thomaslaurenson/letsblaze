@@ -3,10 +3,13 @@
 {{ $count := .Site.Params.homepagePostCount | default 5 }}
 {{ $posts := (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
 <section aria-label="Recent posts">
-  {{ range $i, $post := first $count $posts }}
-    {{ if gt $i 0 }}<hr>{{ end }}
+  {{ range $post := first $count $posts }}
     <article>
       <h2><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a></h2>
+      <p>
+        <time datetime="{{ $post.Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ $post.Date.Format ($post.Site.Params.dateFormat | default "2006-01-02") }}</time>
+        {{ range $post.GetTerms "tags" }} &middot; <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+      </p>
       <!-- By default .Summary include all content, so strip pre (code) and table
       (table) tags from content, escape it and plainify to remove style (e.g., h1) -->
        <p>{{ $post.Summary | replaceRE `(?s)<(pre|table)[^>]*>.*?</(pre|table)>` "" | safeHTML | plainify}}</p>
