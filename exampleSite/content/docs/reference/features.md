@@ -47,8 +47,10 @@ A sitemap is generated automatically at `/sitemap.xml`. With `enableGitInfo = tr
 - Skip link for keyboard navigation
 - `aria-label` on all `<nav>` elements
 - `aria-current="page"` on active navigation links
-- Semantic HTML throughout — `<article>`, `<aside>`, `<time>`, `<figure>`, `<nav>`
-- `<details>`/`<summary>` for collapsible docs navigation
+- Breadcrumb navigation (`<nav aria-label="Breadcrumb">`) on docs pages and blog posts
+- `<dl>`/`<dt>`/`<dd>` for blog post metadata (date, tags, author)
+- `aria-label` on prev/next links with post or page title context
+- Semantic HTML throughout — `<article>`, `<time>`, `<figure>`, `<nav>`
 
 ## SEO
 
@@ -56,8 +58,17 @@ A sitemap is generated automatically at `/sitemap.xml`. With `enableGitInfo = tr
 - Canonical URL on every page
 - Open Graph tags (`og:title`, `og:description`, `og:type`, `og:url`, `og:site_name`)
 - `article:published_time` and `article:modified_time` on blog posts
-- JSON-LD Article schema on blog posts
+- Schema.org microdata on blog posts (`itemscope`/`itemtype` attributes, no `<script>` required)
 - `noindex` on 404
+
+## Images
+
+The `imageMode` param controls how Markdown images are rendered. Three modes are
+supported: `embed` (default), `link-same-tab`, and `link-new-tab`. Set it
+site-wide in `hugo.toml` or per-page in front matter. In `embed` mode, the first
+image on a page uses `loading="eager" fetchpriority="high"` for LCP; subsequent
+images use `loading="lazy"`. See [Working with Images](/blog/working-with-images/)
+for full details.
 
 ## Shortcodes
 

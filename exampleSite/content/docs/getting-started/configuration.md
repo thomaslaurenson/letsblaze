@@ -45,6 +45,7 @@ for every supported parameter.
   dateFormat = "2006-01-02"        # Go reference time format
   homepagePostCount = 5            # recent posts shown on homepage
   showThemeCredit = true           # set false to hide "Theme: letsblaze" in footer
+  imageMode = "embed"              # embed | link-same-tab | link-new-tab
   # ogImage = "/og-image.png"      # path to default OG image in static/
 ```
 

@@ -3,11 +3,47 @@ title: "Working with Images"
 date: 2026-02-15
 draft: false
 tags: ["images", "markdown", "page-bundles"]
-description: "How to use images in letsblaze — page bundles, captions, and automatic dimension detection for CLS-free layouts."
+description: "How to use images in letsblaze — imageMode param, page bundles, captions, and automatic dimension detection for CLS-free layouts."
 ---
 
-letsblaze handles images with a custom render hook that adds `<figure>` and
-`<figcaption>` support and automatic dimension detection for page-bundle images.
+letsblaze handles images with a custom render hook that supports three rendering
+modes controlled by the `imageMode` param, plus automatic dimension detection
+for page-bundle images.
+
+## Image mode
+
+The `imageMode` param controls how Markdown images are rendered. Set it
+site-wide in `hugo.toml` or override it per page in front matter.
+
+| Value | Output |
+|-------|--------|
+| `embed` (default) | Wraps the image in a `<figure>` element |
+| `link-same-tab` | Renders a bare `<a>` link using the alt text as link text |
+| `link-new-tab` | Same as `link-same-tab` but opens in a new tab with `rel="noopener noreferrer"` |
+
+Site-wide in `hugo.toml`:
+
+```toml
+[params]
+  imageMode = "embed"
+```
+
+Per-page in front matter:
+
+```yaml
+---
+imageMode: link-same-tab
+---
+```
+
+## Eager and lazy loading
+
+In `embed` mode, the first image on a page (`Ordinal 0`) is treated as a
+likely above-the-fold image. It is rendered with `loading="eager"` and
+`fetchpriority="high"` to improve Largest Contentful Paint (LCP). All
+subsequent images use `loading="lazy"`.
+
+This is automatic — no configuration required.
 
 ## Page bundles
 
