@@ -18,8 +18,8 @@
 </article>
 <hr>
 <nav aria-label="Page navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev &mdash; {{ .Title }}</a>{{ end }}
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous page: {{ .Title }}">prev &mdash; {{ .Title }}</a>{{ end }}
   {{ if and .PrevInSection .NextInSection }} &middot; {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next &mdash; {{ .Title }}</a>{{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next page: {{ .Title }}">next &mdash; {{ .Title }}</a>{{ end }}
 </nav>
 {{ end }}
