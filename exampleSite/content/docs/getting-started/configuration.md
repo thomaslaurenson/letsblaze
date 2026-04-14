@@ -5,8 +5,7 @@ draft: false
 description: "All configuration options for the letsblaze Hugo theme."
 ---
 
-All letsblaze configuration lives in `hugo.toml`. Below is a complete reference
-for every supported parameter.
+All letsblaze configuration lives in `hugo.toml`. Below is a complete reference for every supported parameter.
 
 ## Top-level settings
 

@@ -6,13 +6,11 @@ tags: ["markdown", "content", "writing"]
 description: "A guide to writing content with letsblaze — headings, lists, blockquotes, footnotes, and inline elements."
 ---
 
-letsblaze renders standard Markdown with a few additions. This post covers
-everything available when writing content.
+letsblaze renders standard Markdown with a few additions. This post covers everything available when writing content.
 
 ## Headings
 
-`<h1>` is reserved for the page title, rendered automatically by the theme.
-Use `<h2>` through `<h6>` for section headings within content.
+`<h1>` is reserved for the page title, rendered automatically by the theme. Use `<h2>` through `<h6>` for section headings within content.
 
 ## H2
 ### H3
@@ -68,5 +66,4 @@ letsblaze also ships shortcodes for elements with no Markdown equivalent:
 
 With `enableEmoji = true` in `hugo.toml`, use shorthand codes: :rocket: :tada: :fire:
 
-Unicode decimal and hexadecimal codes also work everywhere without configuration:
-&#128516; &#x1F525;
+Unicode decimal and hexadecimal codes also work everywhere without configuration: &#128516; &#x1F525;

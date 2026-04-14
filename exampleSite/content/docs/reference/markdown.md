@@ -5,8 +5,7 @@ draft: false
 description: "A complete reference for Markdown syntax supported by letsblaze, including headings, tables, code, lists, and blockquotes."
 ---
 
-A reference for all Markdown elements supported by letsblaze. Use this page
-to verify rendering before writing content.
+A reference for all Markdown elements supported by letsblaze. Use this page to verify rendering before writing content.
 
 ## Headings
 
@@ -20,9 +19,7 @@ to verify rendering before writing content.
 
 ## Paragraph
 
-Standard paragraph text. Separate paragraphs with a blank line. Line breaks
-within a paragraph are collapsed to a space unless you end a line with two
-spaces or a backslash.
+Standard paragraph text. Separate paragraphs with a blank line. Line breaks within a paragraph are collapsed to a space unless you end a line with two spaces or a backslash.
 
 ## Blockquotes
 

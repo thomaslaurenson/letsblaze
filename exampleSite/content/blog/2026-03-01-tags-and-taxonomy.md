@@ -21,10 +21,7 @@ tags: ["hugo", "web", "html"]
 
 ## Tag pages
 
-Every tag automatically gets a listing page at `/tags/TAG-NAME/` showing all
-posts with that tag, with pagination.
-
-The tags index at `/tags/` lists all tags ordered by post count.
+Every tag automatically gets a listing page at `/tags/TAG-NAME/` showing all posts with that tag, with pagination. The tags index at `/tags/` lists all tags ordered by post count.
 
 ## RSS per tag
 
@@ -38,6 +35,4 @@ This lets readers subscribe to specific topics rather than the full blog feed.
 
 ## Naming conventions
 
-Tag names are lowercased and slugified automatically. `Hugo Theme` becomes
-`hugo-theme` in the URL. Use consistent, lowercase tag names in front matter
-to avoid duplicate taxonomy terms.
+Tag names are lowercased and slugified automatically. `Hugo Theme` becomes `hugo-theme` in the URL. Use consistent, lowercase tag names in front matter to avoid duplicate taxonomy terms.
