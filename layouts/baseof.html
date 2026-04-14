@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.LanguageCode }}">
+<html lang="{{ .Site.LanguageCode | default "en" }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
 
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ .Site.Params.description }}{{ end }}{{ end }}">
 
@@ -26,7 +26,7 @@
 
   {{ with .OutputFormats.Get "RSS" }}<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .Permalink }}">{{ end }}
   <link rel="sitemap" type="application/xml" href="{{ "/sitemap.xml" | absURL }}">
-  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZD0iTTE2IDIgQzE0IDggMTAgMTAgMTEgMTYgQzggMTMgOSA4IDkgOCBDNSAxMyA2IDIwIDEwIDI0IEMxMCAyNCA5IDIyIDExIDIxIEMxMSAyNSAxMyAyOCAxNiAzMCBDMTkgMjggMjEgMjUgMjEgMjEgQzIzIDIyIDIyIDI0IDIyIDI0IEMyNiAyMCAyNyAxMyAyMyA4IEMyMyA4IDI0IDEzIDIxIDE2IEMyMiAxMCAxOCA4IDE2IDJaIiBmaWxsPSIjZmY2YjAwIi8+PC9zdmc+">
 
   {{ block "head-extra" . }}{{ end }}
 
@@ -38,7 +38,7 @@
     {{ if templates.Exists "partials/logo.html" }}
       {{ partial "logo.html" . }}
     {{ else }}
-      <p><a href="/">{{ .Site.Title }}</a></p>
+      <a href="/">{{ .Site.Title }}</a>
     {{ end }}
     <nav aria-label="Main navigation">
       <ul>
@@ -54,11 +54,9 @@
   </main>
   <hr>
   <footer>
-    <small>
-      &copy; {{ now.Year }} {{ with .Site.Params.copyright }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}
-      {{ with .OutputFormats.Get "RSS" }} &middot; <a href="{{ .RelPermalink }}">RSS</a>{{ end }}
-      {{ if (.Site.Params.showThemeCredit | default true) }} &middot; Theme: <a href="https://github.com/thomaslaurenson/letsblaze">letsblaze</a>{{ end }}
-    </small>
+    <small>&copy; {{ now.Year }} {{ with .Site.Params.copyright }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}</small>
+    {{ with .OutputFormats.Get "RSS" }} &middot; <a href="{{ .RelPermalink }}" aria-label="RSS feed">RSS</a>{{ end }}
+    {{ if (.Site.Params.showThemeCredit | default true) }} &middot; Theme: <a href="https://github.com/thomaslaurenson/letsblaze">letsblaze</a>{{ end }}
   </footer>
 </body>
 </html>

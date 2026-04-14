@@ -33,6 +33,7 @@ disableHugoGeneratorInject = false  # intentional — we like Hugo
   dateFormat = "2006-01-02" # Go reference time format
   homepagePostCount = 5     # number of posts shown on the homepage
   showThemeCredit = true
+  imageMode = "embed"       # embed | link-same-tab | link-new-tab
   # ogImage = "/og-image.png"  # uncomment and add image to static/ to enable OG images
 
 [[menus.main]]

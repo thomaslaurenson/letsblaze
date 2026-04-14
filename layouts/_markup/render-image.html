@@ -1,9 +1,23 @@
-{{ $img := .Page.Resources.Get .Destination }}
-<figure>
-  {{ if $img }}
-    <img src="{{ .Destination }}" alt="{{ .Text }}" width="{{ $img.Width }}" height="{{ $img.Height }}" loading="lazy">
-  {{ else }}
-    <img src="{{ .Destination }}" alt="{{ .Text }}" loading="lazy">
+{{ $imageMode := .Page.Params.imageMode | default .Page.Site.Params.imageMode | default "embed" }}
+
+{{ if eq $imageMode "embed" }}
+  {{ $img := .Page.Resources.Get .Destination }}
+  {{ $loading := "lazy" }}
+  {{ $fetchpriority := "" }}
+  {{ if eq .Ordinal 0 }}
+    {{ $loading = "eager" }}
+    {{ $fetchpriority = "high" }}
   {{ end }}
-  {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
-</figure>
+  <figure>
+    {{ if $img }}
+      <img src="{{ .Destination }}" alt="{{ .Text }}" width="{{ $img.Width }}" height="{{ $img.Height }}" loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
+    {{ else }}
+      <img src="{{ .Destination }}" alt="{{ .Text }}" loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
+    {{ end }}
+    {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
+  </figure>
+{{ else if eq $imageMode "link-same-tab" }}
+  <a href="{{ .Destination }}">{{ .Text }}</a>
+{{ else if eq $imageMode "link-new-tab" }}
+  <a href="{{ .Destination }}" target="_blank" rel="noopener noreferrer">{{ .Text }}</a>
+{{ end }}

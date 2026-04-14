@@ -50,8 +50,7 @@ hugo mod get
 
 ## Option 3 — Manual download
 
-Download the repository as a zip from GitHub and extract it into `themes/letsblaze/`.
-Set `theme = "letsblaze"` in `hugo.toml`.
+Download the repository as a zip from GitHub and extract it into `themes/letsblaze/`. Set `theme = "letsblaze"` in `hugo.toml`.
 
 This method requires manual updates.
 

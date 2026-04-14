@@ -6,10 +6,7 @@ tags: ["code", "syntax", "markdown"]
 description: "How letsblaze handles code blocks and syntax highlighting using Chroma with inline styles and no external CSS."
 ---
 
-letsblaze uses Hugo's built-in Chroma syntax highlighter, configured to emit
-inline styles rather than CSS classes. This means syntax highlighting works
-with no external stylesheet — consistent with the theme's no-external-resources
-philosophy.
+letsblaze uses Hugo's built-in Chroma syntax highlighter, configured to emit inline styles rather than CSS classes. This means syntax highlighting works with no external stylesheet — consistent with the theme's no-external-resources philosophy.
 
 ## Inline code
 
@@ -47,10 +44,7 @@ hugo --minify
 
 ## Syntax style
 
-letsblaze is opinionated: the default Chroma style is `monochrome`. This works
-in both light and dark mode without maintaining two colour palettes.
-
-To use a different style, change `style` in `hugo.toml`:
+letsblaze is opinionated: the default Chroma style is `monochrome`. This works in both light and dark mode without maintaining two colour palettes. To use a different style, change `style` in `hugo.toml`:
 
 ```toml
 [markup.highlight]
@@ -58,5 +52,4 @@ To use a different style, change `style` in `hugo.toml`:
   style = "github"  # see https://xyproto.github.io/splash/docs/
 ```
 
-Note that non-monochrome styles may not work well in dark mode without additional
-CSS overrides.
+Note that non-monochrome styles may not work well in dark mode without additional CSS overrides.
