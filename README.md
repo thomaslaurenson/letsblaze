@@ -115,7 +115,7 @@ Every rule has an explicit justification.
 | ID  | Constraint | Justification |
 |-----|------------|---------------|
 | C1  | **CSS inline in `<head>`** | No linked file = no extra HTTP request, no render blocking, no FOUC |
-| C2  | **Skip link hidden off-screen** | `position: absolute; left: -9999px` — revealed on `:focus` only |
+| C2  | **Skip link hidden off-screen** | `position: absolute; left: -9999px` — revealed on `:focus` with `z-index: 1`, `background`, and `padding` to ensure visibility |
 | C3  | **`body { max-width: 100ch }`** | Prevents unreadable line lengths on wide viewports |
 | C4  | **`body { line-height: 1.6 }`** | Browser default is too tight for comfortable reading |
 | C5  | **`img { max-width: 100%; height: auto }`** | Responsive images; `height: auto` prevents CLS alongside explicit `width`/`height` attributes |
@@ -125,6 +125,7 @@ Every rule has an explicit justification.
 | C9  | **Dark mode via `prefers-color-scheme: dark`** | Follows OS preference — no JavaScript, no toggle, no cookie |
 | C10 | **`pre { overflow-x: auto }`** | Wide code blocks scroll horizontally instead of being clipped |
 | C11 | **`body { font-size: 18px }`** | Browser default (16px) is too small for comfortable long-form reading |
+| C12 | **`article + article { margin-top: 2rem }`** | Separates post list entries with whitespace instead of `<hr>` for a cleaner visual rhythm |
 
 ### Semantic HTML and Accessibility
 
@@ -133,10 +134,10 @@ Every rule has an explicit justification.
 | S1 | **Skip link** — `<a href="#main-content">Skip to content</a>` on every page |
 | S2 | **`aria-label` on every `<nav>`** |
 | S3 | **`aria-current="page"` on the active nav link** |
-| S4 | **Site title as `<p>`** on every page — reserves `<h1>` for page content. Optional: create `layouts/partials/logo.html` to render a custom logo (inline SVG recommended — no HTTP fetch) in place of the text title. |
+| S4 | **Site title as bare `<a>`** on every page — reserves `<h1>` for page content. Optional: create `layouts/partials/logo.html` to render a custom logo (inline SVG recommended) in place of the text title. |
 | S5 | **`<time datetime="...">`** on blog post dates |
-| S6 | **`<figure>` with `loading="lazy"`** for all images |
-| S7 | **Breadcrumb navigation** — `<nav aria-label="Breadcrumb">` with `<ol>` on every docs page; section tab strip with `<nav aria-label="Docs sections">` on every docs page |
+| S6 | **Image rendering controlled by `imageMode` param** — three modes: `embed` (default): wraps image in `<figure>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
+| S7 | **Breadcrumb navigation** — `<nav aria-label="Breadcrumb">` with `<ol>` on every docs page and every blog post page; section tab strip with `<nav aria-label="Docs sections">` on every docs page |
 
 > **Docs hierarchy:** The docs templates assume a two-level structure:
 > `/docs/<section>/<page>/`. Structures shallower or deeper than two levels
