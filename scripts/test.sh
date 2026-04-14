@@ -205,8 +205,10 @@ fi
 # C2-C10: CSS rules verified against the home page <style> block.
 # All pages share the same inline styles; home is a reliable proxy.
 grep -q 'position: absolute' "${PAGE_HOME}" \
-    && pass "[C2] Skip link hide CSS" \
-    || fail "[C2] Skip link hide CSS"
+    && grep -q 'z-index' "${PAGE_HOME}" \
+    && grep -q 'padding' "${PAGE_HOME}" \
+    && pass "[C2] Skip link hide/show CSS" \
+    || fail "[C2] Skip link hide/show CSS"
 
 grep -q '100ch' "${PAGE_HOME}" \
     && pass "[C3] Body max-width CSS" \
@@ -243,6 +245,10 @@ grep -q 'overflow-x: auto' "${PAGE_HOME}" \
 grep -q 'font-size: 18px' "${PAGE_HOME}" \
     && pass "[C11] Body font-size CSS" \
     || fail "[C11] Body font-size CSS"
+
+grep -q 'margin-top: 2rem' "${PAGE_HOME}" \
+    && pass "[C12] Article spacing CSS" \
+    || fail "[C12] Article spacing CSS"
 echo ""
 
 # 5. Constraints: Semantic HTML and Accessibility (S1-S7)
@@ -268,19 +274,21 @@ grep -q '<time ' "${PAGE_BLOG_POST}" \
     && pass "[S5] Blog post time elem" \
     || fail "[S5] Blog post time elem"
 
-# S6: <figure> with loading="lazy" for all images
+# S6: Image render hook — imageMode param with eager/lazy loading and link modes
 # Verified via template source — example site content does not embed images.
 grep -q '<figure>' "layouts/_markup/render-image.html" \
-    && grep -q 'loading="lazy"' "layouts/_markup/render-image.html" \
-    && pass "[S6] Image figure/lazy (template)" \
-    || fail "[S6] Image figure/lazy (template)"
+    && grep -q 'loading=' "layouts/_markup/render-image.html" \
+    && grep -q 'fetchpriority' "layouts/_markup/render-image.html" \
+    && pass "[S6] Image render hook (template)" \
+    || fail "[S6] Image render hook (template)"
 
-# S7: Breadcrumb on docs section/page; section list on docs root and section index
+# S7: Breadcrumb on docs section/page and blog posts; section list on docs root and section index
 PAGE_DOC_SECTION="${PUBLIC}/docs/getting-started/index.html"
 grep -q 'aria-label="Breadcrumb"' "${PAGE_DOC}" \
     && grep -q 'aria-label="Breadcrumb"' "${PAGE_DOC_SECTION}" \
-    && pass "[S7] Docs breadcrumb navigation" \
-    || fail "[S7] Docs breadcrumb navigation"
+    && grep -q 'aria-label="Breadcrumb"' "${PAGE_BLOG_POST}" \
+    && pass "[S7] Breadcrumb navigation" \
+    || fail "[S7] Breadcrumb navigation"
 echo ""
 
 # 6. Constraints: SEO and Metadata (M1-M10)
