@@ -1,8 +1,8 @@
 <style>
   .skip-link { position: absolute; left: -9999px; top: 0; }
-  .skip-link:focus { left: 0; }
+  .skip-link:focus { left: 0; z-index: 1; background: #fff; padding: 0.5rem 1rem; }
 
-  body { max-width: 100ch; margin: 0 auto; padding: 1rem; font-size: 18px; line-height: 1.6; }
+  body { max-width: 100ch; margin: 0 auto; padding: 1rem; font-size: 18px; line-height: 1.6; color: #111; }
 
   img { max-width: 100%; height: auto; }
 
@@ -25,6 +25,8 @@
 
   [aria-current="page"] { font-weight: bold; }
 
+  article + article { margin-top: 2rem; }
+
   @media (prefers-color-scheme: dark) {
     body { background-color: #111; color: #ddd; }
     a { color: #6ab0f5; }
@@ -34,5 +36,6 @@
     details, summary { color: #ddd; }
     mark { background-color: #5a4a00; color: #fff; }
     table, th, td { border-color: #444; }
+    .skip-link:focus { background: #111; }
   }
 </style>
