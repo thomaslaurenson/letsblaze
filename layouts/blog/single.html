@@ -1,16 +1,31 @@
 {{ define "main" }}
+<nav aria-label="Breadcrumb">
+  <ol>
+    <li><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></li>
+    <li><span aria-current="page">{{ .Title }}</span></li>
+  </ol>
+</nav>
 <article itemscope itemtype="https://schema.org/BlogPosting">
   <h1 itemprop="headline">{{ .Title }}</h1>
-  <p><b>Date:</b> <time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02") }}</time></p>
-  {{ if .GetTerms "tags" }}<p><b>Tags: </b>{{ range .GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</p>{{ end }}
-  {{ with .Site.Params.author }}<p itemprop="author" itemscope itemtype="https://schema.org/Person"><b>Author: </b><span itemprop="name">{{ . }}</span></p>{{ end }}
+  <dl>
+    <dt>Date</dt>
+    <dd><time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02") }}</time></dd>
+    {{ if .GetTerms "tags" }}
+    <dt>Tags</dt>
+    <dd>{{ range .GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</dd>
+    {{ end }}
+    {{ with .Site.Params.author }}
+    <dt>Author</dt>
+    <dd itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">{{ . }}</span></dd>
+    {{ end }}
+  </dl>
   <hr>
   {{ .Content }}
 </article>
 <hr>
 <nav aria-label="Post navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">prev &mdash; {{ .Title }}</a>{{ end }}
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous post: {{ .Title }}">prev &mdash; {{ .Title }}</a>{{ end }}
   {{ if and .PrevInSection .NextInSection }} &middot; {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}">next &mdash; {{ .Title }}</a>{{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next post: {{ .Title }}">next &mdash; {{ .Title }}</a>{{ end }}
 </nav>
 {{ end }}
