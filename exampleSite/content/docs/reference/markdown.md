@@ -33,7 +33,7 @@ With attribution:
 
 > Do one thing and do it well.
 >
-> — <cite>Unix philosophy</cite>
+> <cite>Unix philosophy</cite>
 
 ## Lists
 

@@ -3,7 +3,7 @@ title: "Writing Content"
 date: 2026-01-15
 draft: false
 tags: ["markdown", "content", "writing"]
-description: "A guide to writing content with letsblaze — headings, lists, blockquotes, footnotes, and inline elements."
+description: "A guide to writing content with letsblaze: headings, lists, blockquotes, footnotes, and inline elements."
 ---
 
 letsblaze renders standard Markdown with a few additions. This post covers everything available when writing content.
@@ -38,7 +38,7 @@ Attribution with a cite element:
 
 > Fast sites are kind sites.
 >
-> — <cite>Someone who cares about UX</cite>
+> <cite>Someone who cares about UX</cite>
 
 ## Footnotes
 
@@ -50,10 +50,10 @@ Standard Markdown footnotes work out of the box.[^1]
 
 Standard Markdown inline elements:
 
-- **Bold** — `**text**`
-- _Italic_ — `_text_`
-- `Code` — `` `code` ``
-- ~~Strikethrough~~ — `~~text~~`
+- **Bold**: `**text**`
+- _Italic_: `_text_`
+- `Code`: `` `code` ``
+- ~~Strikethrough~~: `~~text~~`
 
 letsblaze also ships shortcodes for elements with no Markdown equivalent:
 

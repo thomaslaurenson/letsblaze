@@ -7,7 +7,7 @@ description: "How to install the letsblaze Hugo theme as a git submodule, Hugo m
 
 letsblaze requires Hugo **0.134.0 or later**. Run `hugo version` to check.
 
-## Option 1 — Git submodule (recommended)
+## Option 1: Git submodule (recommended)
 
 ```bash
 cd your-hugo-site
@@ -26,7 +26,7 @@ To update the theme later:
 git submodule update --remote --merge
 ```
 
-## Option 2 — Hugo module
+## Option 2: Hugo module
 
 Initialise your site as a Hugo module if you haven't already:
 
@@ -48,7 +48,7 @@ Pull the module:
 hugo mod get
 ```
 
-## Option 3 — Manual download
+## Option 3: Manual download
 
 Download the repository as a zip from GitHub and extract it into `themes/letsblaze/`. Set `theme = "letsblaze"` in `hugo.toml`.
 

@@ -6,7 +6,7 @@ tags: ["code", "syntax", "markdown"]
 description: "How letsblaze handles code blocks and syntax highlighting using Chroma with inline styles and no external CSS."
 ---
 
-letsblaze uses Hugo's built-in Chroma syntax highlighter, configured to emit inline styles rather than CSS classes. This means syntax highlighting works with no external stylesheet — consistent with the theme's no-external-resources philosophy.
+letsblaze uses Hugo's built-in Chroma syntax highlighter, configured to emit inline styles rather than CSS classes. This means syntax highlighting works with no external stylesheet, consistent with the theme's no-external-resources philosophy.
 
 ## Inline code
 

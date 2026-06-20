@@ -3,7 +3,7 @@ title: "Tags and Taxonomy"
 date: 2026-03-01
 draft: false
 tags: ["tags", "taxonomy", "organisation"]
-description: "How letsblaze handles tags and taxonomy pages — automatic tag indexes, post counts, and RSS feeds per tag."
+description: "How letsblaze handles tags and taxonomy pages: automatic tag indexes, post counts, and RSS feeds per tag."
 ---
 
 letsblaze supports Hugo's built-in taxonomy system. Tags are the primary taxonomy.
