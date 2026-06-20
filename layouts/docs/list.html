@@ -1,11 +1,6 @@
 {{ define "main" }}
 {{ if not .Parent.IsHome }}
-<nav aria-label="Breadcrumb">
-  <ol>
-    <li><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></li>
-    <li><span aria-current="page">{{ .Title }}</span></li>
-  </ol>
-</nav>
+  {{ partial "breadcrumb.html" . }}
 {{ end }}
 <article>
   <h1>{{ .Title }}</h1>
