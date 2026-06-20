@@ -1,0 +1,14 @@
+{{/*
+  Recursive breadcrumb for arbitrary depth.
+  Walks .Ancestors (Hugo returns these root-first) to build the trail.
+*/}}
+<nav aria-label="Breadcrumb">
+  <ol>
+    {{ range .Ancestors.Reverse }}
+      {{ if not .IsHome }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      {{ end }}
+    {{ end }}
+    <li><span aria-current="page">{{ .Title }}</span></li>
+  </ol>
+</nav>

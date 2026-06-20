@@ -30,7 +30,7 @@ All letsblaze configuration lives in `hugo.toml`. Below is a complete reference 
   unsafe = true  # required for shortcodes like <kbd>, <del>, <mark>
 
 [markup.highlight]
-  noClasses = true   # required — letsblaze has no external CSS
+  noClasses = true   # required, letsblaze has no external CSS
   style = "monochrome"
 ```
 
@@ -59,4 +59,4 @@ Navigation items are defined in `hugo.toml`:
   weight = 1
 ```
 
-Add as many items as needed. `weight` controls order — lower numbers appear first.
+Add as many items as needed. `weight` controls order, with lower numbers appearing first.

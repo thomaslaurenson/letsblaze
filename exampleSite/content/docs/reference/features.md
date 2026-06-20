@@ -2,7 +2,7 @@
 title: "Features"
 date: 2026-01-01
 draft: false
-description: "A complete reference for all letsblaze theme features — shortcodes, dark mode, RSS, accessibility, and SEO."
+description: "A complete reference for all letsblaze theme features: shortcodes, dark mode, RSS, accessibility, and SEO."
 ---
 
 ## No JavaScript
@@ -15,7 +15,7 @@ No external stylesheets, no web fonts, no CDN calls. All styles are inline. Ever
 
 ## Dark mode
 
-Dark mode is automatic — it follows the system `prefers-color-scheme` preference. No toggle, no JavaScript, no cookie. It just works.
+Dark mode is automatic: it follows the system `prefers-color-scheme` preference. No toggle, no JavaScript, no cookie. It just works.
 
 ## Syntax highlighting
 
@@ -25,9 +25,9 @@ Code blocks are highlighted at build time using Hugo's Chroma highlighter with i
 
 Hugo generates RSS feeds automatically:
 
-- `/index.xml` — full site feed
-- `/blog/index.xml` — blog feed
-- `/tags/TAG/index.xml` — per-tag feed
+- `/index.xml`: full site feed
+- `/blog/index.xml`: blog feed
+- `/tags/TAG/index.xml`: per-tag feed
 
 The feed link is autodiscoverable in `<head>` and linked in the footer.
 
@@ -43,11 +43,11 @@ A sitemap is generated automatically at `/sitemap.xml`. With `enableGitInfo = tr
 - Breadcrumb navigation (`<nav aria-label="Breadcrumb">`) on docs pages and blog posts
 - `<dl>`/`<dt>`/`<dd>` for blog post metadata (date, tags, author)
 - `aria-label` on prev/next links with post or page title context
-- Semantic HTML throughout — `<article>`, `<time>`, `<figure>`, `<nav>`
+- Semantic HTML throughout: `<article>`, `<time>`, `<figure>`, `<nav>`
 
 ## SEO
 
-- `<meta name="description">` — falls back through page description → summary → site description
+- `<meta name="description">`: falls back through page description, summary, then site description
 - Canonical URL on every page
 - Open Graph tags (`og:title`, `og:description`, `og:type`, `og:url`, `og:site_name`)
 - `article:published_time` and `article:modified_time` on blog posts

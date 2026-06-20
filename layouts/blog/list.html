@@ -1,4 +1,9 @@
 {{ define "main" }}
 <h1>{{ .Title }}</h1>
+{{ with .Site.Taxonomies.tags }}
+<nav aria-label="Tags">
+  {{ range .ByCount }}<a href="{{ .Page.RelPermalink }}">{{ .Page.Title }} ({{ .Count }})</a> {{ end }}
+</nav>
+{{ end }}
 {{ partial "post-list.html" . }}
 {{ end }}

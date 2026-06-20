@@ -1,10 +1,5 @@
 {{ define "main" }}
-<nav aria-label="Breadcrumb">
-  <ol>
-    <li><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></li>
-    <li><span aria-current="page">{{ .Title }}</span></li>
-  </ol>
-</nav>
+{{ partial "breadcrumb.html" . }}
 <article itemscope itemtype="https://schema.org/BlogPosting">
   <h1 itemprop="headline">{{ .Title }}</h1>
   <dl>
@@ -24,8 +19,8 @@
 </article>
 <hr>
 <nav aria-label="Post navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous post: {{ .Title }}">prev &mdash; {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} &middot; {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next post: {{ .Title }}">next &mdash; {{ .Title }}</a>{{ end }}
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous post: {{ .Title }}">prev - {{ .Title }}</a>{{ end }}
+  {{ if and .PrevInSection .NextInSection }} - {{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next post: {{ .Title }}">next - {{ .Title }}</a>{{ end }}
 </nav>
 {{ end }}

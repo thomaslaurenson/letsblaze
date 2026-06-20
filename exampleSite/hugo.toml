@@ -7,7 +7,7 @@ themesDir = "../.."
 enableEmoji = true
 enableGitInfo = true
 
-disableHugoGeneratorInject = false  # intentional — we like Hugo
+disableHugoGeneratorInject = false  # intentional, we like Hugo
 
 # Pagination: pagerSize replaces the old top-level `paginate` key (changed ~v0.128.0)
 [pagination]
@@ -20,7 +20,7 @@ disableHugoGeneratorInject = false  # intentional — we like Hugo
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
 
 [markup.highlight]
-  noClasses = true    # inline Chroma styles — required since we have no external CSS
+  noClasses = true    # inline Chroma styles, required since we have no external CSS
   style = "monochrome"
   # letsblaze is opinionated: monochrome is the only supported code style.
   # To use a different Chroma style, change the value above.

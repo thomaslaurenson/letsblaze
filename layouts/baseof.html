@@ -55,8 +55,8 @@
   <hr>
   <footer>
     <small>&copy; {{ now.Year }} {{ with .Site.Params.copyright }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}</small>
-    {{ with .OutputFormats.Get "RSS" }} &middot; <a href="{{ .RelPermalink }}" aria-label="RSS feed">RSS</a>{{ end }}
-    {{ if (.Site.Params.showThemeCredit | default true) }} &middot; Theme: <a href="https://github.com/thomaslaurenson/letsblaze">letsblaze</a>{{ end }}
+    {{ with .OutputFormats.Get "RSS" }} - <a href="{{ .RelPermalink }}" aria-label="RSS feed">RSS</a>{{ end }}
+    {{ if (.Site.Params.showThemeCredit | default true) }} - Theme: <a href="https://github.com/thomaslaurenson/letsblaze">letsblaze</a>{{ end }}
   </footer>
 </body>
 </html>

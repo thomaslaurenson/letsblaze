@@ -1,25 +1,21 @@
 {{ define "main" }}
-{{/* letsblaze: docs navigation assumes exactly two levels of hierarchy:
-     /docs/<section>/<page>. If your docs structure is shallower or deeper
-     than two levels, navigation will be incomplete. See README for details. */}}
-{{ if not .Parent.Parent.Parent.IsHome }}
-  {{ warnf "letsblaze: docs page %q is more than two levels deep — breadcrumb navigation may be incomplete. See README constraint S7." .RelPermalink }}
-{{ end }}
-<nav aria-label="Breadcrumb">
-  <ol>
-    <li><a href="{{ .Parent.Parent.RelPermalink }}">{{ .Parent.Parent.Title }}</a></li>
-    <li><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></li>
-    <li><span aria-current="page">{{ .Title }}</span></li>
-  </ol>
-</nav>
+{{ partial "breadcrumb.html" . }}
 <article>
   <h1>{{ .Title }}</h1>
+  {{ with .TableOfContents }}
+    {{ if ge (len (findRE "<li>" . )) 3 }}
+    <details class="toc">
+      <summary>On this page</summary>
+      {{ . }}
+    </details>
+    {{ end }}
+  {{ end }}
   {{ .Content }}
 </article>
 <hr>
 <nav aria-label="Page navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous page: {{ .Title }}">prev &mdash; {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} &middot; {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next page: {{ .Title }}">next &mdash; {{ .Title }}</a>{{ end }}
+  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous page: {{ .Title }}">prev - {{ .Title }}</a>{{ end }}
+  {{ if and .PrevInSection .NextInSection }} - {{ end }}
+  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next page: {{ .Title }}">next - {{ .Title }}</a>{{ end }}
 </nav>
 {{ end }}
