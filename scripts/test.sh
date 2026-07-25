@@ -91,6 +91,7 @@ PAGE_HOME="${PUBLIC}/index.html"
 PAGE_BLOG_LIST="${PUBLIC}/blog/index.html"
 PAGE_BLOG_POST="${PUBLIC}/blog/welcome-to-letsblaze/index.html"
 PAGE_DOC="${PUBLIC}/docs/getting-started/installation/index.html"
+PAGE_MARKDOWN="${PUBLIC}/docs/reference/markdown/index.html"
 PAGE_404="${PUBLIC}/404.html"
 
 # All built HTML pages, used for global constraint checks.
@@ -214,8 +215,8 @@ else
 fi
 printf '\n'
 
-# 4. Constraints: CSS Integrity (C1-C12)
-printf '=== 4. C1-C12: CSS Integrity ===\n'
+# 4. Constraints: CSS Integrity (C1-C13)
+printf '=== 4. C1-C13: CSS Integrity ===\n'
 
 # C1: CSS delivered inline inside <style> in <head> on all pages
 C1_FAIL=()
@@ -276,6 +277,18 @@ grep -q 'font-size: 18px' "${PAGE_HOME}" \
 grep -q 'margin-top: 2rem' "${PAGE_HOME}" \
   && pass "[C12] Article spacing CSS" \
   || fail "[C12] Article spacing CSS"
+
+grep -q 'math\[display="block"\]' "${PAGE_HOME}" \
+  && pass "[C13] Math block overflow CSS" \
+  || fail "[C13] Math block overflow CSS"
+
+# Math renders to native MathML at build time (render-passthrough.html + the
+# passthrough delimiters in exampleSite/hugo.toml). This also gives the R1/R4/R5
+# resource checks real math output to police, guarding against a regression that
+# leaves raw LaTeX in the page or reintroduces a scripted/styled math renderer.
+grep -q '<math' "${PAGE_MARKDOWN}" \
+  && pass "[C13] Math renders to MathML" \
+  || fail "[C13] Math renders to MathML (no <math> in markdown reference page)"
 printf '\n'
 
 # 5. Constraints: Semantic HTML and Accessibility (S1-S7)

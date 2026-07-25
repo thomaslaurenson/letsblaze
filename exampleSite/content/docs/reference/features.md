@@ -21,6 +21,10 @@ Dark mode is automatic: it follows the system `prefers-color-scheme` preference.
 
 Code blocks are highlighted at build time using Hugo's Chroma highlighter with inline styles. The default style is `monochrome`. See Configuration for how to change it.
 
+## Math
+
+LaTeX math renders to native MathML at build time using Hugo's `transform.ToMath` (KaTeX, run inside Hugo). The browser renders the `<math>` markup itself, so no JavaScript and no external stylesheet are ever loaded, consistent with the theme's no-external-resources rule. Math is opt-in: enable the passthrough extension in your `hugo.toml` as shown in [Configuration](../../getting-started/configuration/#math-optional). Display math uses `$$...$$` or `\[...\]`; inline math uses `\(...\)`.
+
 ## RSS
 
 Hugo generates RSS feeds automatically:

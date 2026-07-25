@@ -34,6 +34,20 @@ All letsblaze configuration lives in `hugo.toml`. Below is a complete reference 
   style = "monochrome"
 ```
 
+### Math (optional)
+
+To render LaTeX math, enable Goldmark's passthrough extension so the theme's render hook can turn it into MathML at build time. This is opt-in because Hugo does not merge a theme's `markup` configuration, so it must live in your site's `hugo.toml`:
+
+```toml
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block  = [['$$', '$$'], ['\[', '\]']]
+    inline = [['\(', '\)']]
+```
+
+With this in place, `$$...$$` and `\[...\]` render as display math and `\(...\)` as inline math. No JavaScript or external stylesheet is added: the browser renders the MathML natively. See the [Math](../../reference/markdown/#math) reference for examples. Single `$` is intentionally left out of the delimiters so prices and shell variables in prose are never misparsed.
+
 ## Theme params
 
 ```toml

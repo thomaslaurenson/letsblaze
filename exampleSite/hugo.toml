@@ -19,6 +19,12 @@ disableHugoGeneratorInject = false  # intentional, we like Hugo
 [markup.goldmark.renderer]
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
 
+[markup.goldmark.extensions.passthrough]
+  enable = true       # render $$...$$ / \(...\) LaTeX to native MathML at build time
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block  = [['$$', '$$'], ['\[', '\]']]
+    inline = [['\(', '\)']]
+
 [markup.highlight]
   noClasses = true    # inline Chroma styles, required since we have no external CSS
   style = "monochrome"

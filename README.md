@@ -12,6 +12,8 @@ letsblaze is built around one principle: **the fastest resource is one that was 
 - :cloud: No CDN calls
 - :rocket: Plain HTML with a single inline `<style>`
 
+Even math is not an exception: LaTeX renders to native MathML at build time, so equations ship as semantic HTML with no math library and no stylesheet. See [Math](#math).
+
 ### The hard rule
 
 The constraint that never bends is about the **network**: no JavaScript, no external requests, fast. Every page is self-contained HTML with one inline `<style>` block. Nothing else ships to the browser. The R-series constraints below enforce this and are non-negotiable.
@@ -36,7 +38,7 @@ The test to hold in your head while editing: *if I removed this rule, would a re
 
 ## Installation
 
-letsblaze requires Hugo **0.134.0 or later**.
+letsblaze requires Hugo **0.146.0 or later** (it uses the current template system layout under `layouts/_partials`, `layouts/_markup`, and `layouts/_shortcodes`).
 
 ### Option 1: Git submodule (recommended)
 
@@ -100,6 +102,22 @@ Example `layouts/partials/logo.html`:
 </a>
 ```
 
+## Math
+
+LaTeX math renders to native MathML at build time via Hugo's `transform.ToMath` (KaTeX, run inside Hugo). The browser renders the `<math>` markup itself, so no JavaScript and no external stylesheet ship to the reader. This keeps math fully inside the R-series network rules below.
+
+Math is **opt-in**, because Hugo does not merge a theme's `markup` configuration into consuming sites. Enable the passthrough extension in your `hugo.toml`:
+
+```toml
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block  = [['$$', '$$'], ['\[', '\]']]
+    inline = [['\(', '\)']]
+```
+
+Display math then uses `$$...$$` or `\[...\]`, and inline math uses `\(...\)`. Single `$` is intentionally not a delimiter, so prices and shell variables in prose are never misparsed. The conversion is handled by `layouts/_markup/render-passthrough.html`.
+
 ## Constraints
 
 Every design decision is governed by a numbered constraint. These identifiers are used in `scripts/test.sh` so test failures trace directly to this document.
@@ -141,6 +159,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | C10 | **`pre { overflow-x: auto }`** | Wide code blocks scroll horizontally instead of being clipped |
 | C11 | **`body { font-size: 18px }`** | Browser default (16px) is too small for comfortable long-form reading |
 | C12 | **`article + article { margin-top: 2rem }`** | Separates post list entries with whitespace instead of `<hr>` for a cleaner visual rhythm |
+| C13 | **`math[display="block"] { overflow-x: auto }`** | Wide display equations scroll horizontally within their own box instead of overflowing the page, mirroring C6 (tables) and C10 (code) |
 
 ### Semantic HTML and Accessibility
 

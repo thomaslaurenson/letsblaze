@@ -108,3 +108,15 @@ Text with a footnote.[^note]
 | Italic | `_text_` | _text_ |
 | Strikethrough | `~~text~~` | ~~text~~ |
 | Inline code | `` `code` `` | `code` |
+
+## Math
+
+LaTeX math renders to native MathML at build time. No JavaScript and no external stylesheet ship to the browser: the `<math>` markup is rendered by the browser itself.
+
+**Display math** uses `$$...$$` (or `\[...\]`), for example:
+
+$$\text{cell\_col} = \left\lfloor \frac{\text{loc\_left} - \text{world\_y}}{\text{loc\_left} - \text{loc\_right}} \times 128 \right\rfloor$$
+
+**Inline math** uses `\(...\)`, for example \(a^2 + b^2 = c^2\) mid-sentence.
+
+A single `$` is deliberately *not* a delimiter, so prices like $5 and shell variables like `$PATH` in prose are never mistaken for math.
