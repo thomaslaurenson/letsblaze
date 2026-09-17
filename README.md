@@ -172,6 +172,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | C12 | *Retired* | Post lists are `<ul>` elements, so the former `article + article` spacing rule matched nothing and was removed. The number is kept so older references still resolve |
 | C13 | **`math[display="block"] { overflow-x: auto }`** | Wide display equations scroll horizontally within their own box instead of overflowing the page, mirroring C6 (tables) and C10 (code) |
 | C14 | **`nav[aria-label="Tags"] ul li { display: inline }`** | Keeps the blog tag cloud compact instead of one tag per line, while the list markup lets assistive technology announce how many tags there are |
+| C15 | **`:root { color-scheme: light dark }`** | Tells the browser both schemes are supported, so scrollbars, form controls and the `<details>` marker follow the OS preference instead of staying light; C9 only restyles the theme's own elements |
 
 ### Semantic HTML and Accessibility
 

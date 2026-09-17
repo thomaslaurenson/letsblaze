@@ -215,8 +215,8 @@ else
 fi
 printf '\n'
 
-# 4. Constraints: CSS Integrity (C1-C14)
-printf '=== 4. C1-C14: CSS Integrity ===\n'
+# 4. Constraints: CSS Integrity (C1-C15)
+printf '=== 4. C1-C15: CSS Integrity ===\n'
 
 # C1: CSS delivered inline inside <style> in <head> on all pages
 C1_FAIL=()
@@ -281,6 +281,10 @@ grep -q 'math\[display="block"\]' "${PAGE_HOME}" \
 grep -q 'nav\[aria-label="Tags"\] ul li' "${PAGE_HOME}" \
   && pass "[C14] Tag list inline CSS" \
   || fail "[C14] Tag list inline CSS"
+
+grep -q 'color-scheme: light dark' "${PAGE_HOME}" \
+  && pass "[C15] Colour scheme CSS" \
+  || fail "[C15] Colour scheme CSS"
 
 # Math renders to native MathML at build time (render-passthrough.html + the
 # passthrough delimiters in exampleSite/hugo.toml). This also gives the R1/R4/R5
