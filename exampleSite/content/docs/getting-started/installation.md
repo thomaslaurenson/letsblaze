@@ -6,7 +6,7 @@ weight: 1
 description: "How to install the letsblaze Hugo theme as a git submodule, Hugo module, or manual download."
 ---
 
-letsblaze requires Hugo **0.134.0 or later**. Run `hugo version` to check.
+letsblaze requires Hugo **0.146.0 or later**. Run `hugo version` to check.
 
 ## Option 1: Git submodule (recommended)
 

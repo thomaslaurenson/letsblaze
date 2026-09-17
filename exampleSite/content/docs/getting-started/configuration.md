@@ -45,6 +45,9 @@ A blog post named `YYYY-MM-DD-my-post.md` takes its date from the filename and i
 ## Markup
 
 ```toml
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false  # lets a standalone image render as a <figure>
+
 [markup.goldmark.renderer]
   unsafe = true  # required for shortcodes like <kbd>, <del>, <mark>
 
@@ -52,6 +55,10 @@ A blog post named `YYYY-MM-DD-my-post.md` takes its date from the filename and i
   noClasses = true   # required, letsblaze has no external CSS
   style = "monochrome"
 ```
+
+### Images (optional)
+
+In the default `embed` mode a standalone image renders as a `<figure>`, with its title as the `<figcaption>`. Goldmark wraps a standalone image in a paragraph unless told otherwise, and a `<figure>` inside a `<p>` is invalid HTML, so the render hook only emits one when your site sets `wrapStandAloneImageWithinParagraph = false` above. Hugo does not merge a theme's `markup` configuration, so this has to live in your own `hugo.toml`. Without it every image renders as a bare `<img>` inside its paragraph and the title becomes a `title` attribute. See the [Images](../../reference/features/#images) reference for the three `imageMode` values.
 
 ### Math (optional)
 
@@ -93,3 +100,17 @@ Navigation items are defined in `hugo.toml`:
 ```
 
 Add as many items as needed. `weight` controls order, with lower numbers appearing first.
+
+## Logo (optional)
+
+To use a custom logo instead of the plaintext site title, create `layouts/partials/logo.html` in your site (not in the theme). Inline SVG is recommended, as it requires no extra HTTP request and stays consistent with the theme's no-external-resources philosophy.
+
+Example `layouts/partials/logo.html`:
+
+```html
+<a href="{{ .Site.Home.RelPermalink }}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" aria-label="{{ .Site.Title }}">
+    <!-- your SVG content here -->
+  </svg>
+</a>
+```

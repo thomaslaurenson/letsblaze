@@ -7,12 +7,10 @@ Blazingly fast, highly opinionated flyweight Hugo theme
 letsblaze is built around one principle: **the fastest resource is one that was never requested.**
 
 - :no_entry: No JavaScript
-- :link: No external stylesheets
+- :link: No CSS
 - :pencil2: No web fonts
 - :cloud: No CDN calls
 - :rocket: Plain HTML with a single inline `<style>`
-
-Even math is not an exception: LaTeX renders to native MathML at build time, so equations ship as semantic HTML with no math library and no stylesheet. See [Math](#math).
 
 ### The hard rule
 
@@ -22,23 +20,36 @@ The constraint that never bends is about the **network**: no JavaScript, no exte
 
 "Minimal CSS" is *not* the rule. It was once used as a proxy for the hard rule above, and that proxy is misleading. Because the CSS is already inline, one more selector costs a few dozen bytes inside an already-loaded document. It triggers no request and no render-blocking. So the amount of CSS is the wrong thing to police.
 
-The right question for any rule is: **does it earn its bytes by serving reading or navigation?**
+The right question for any rule is: **does it earn its bytes by serving reading or navigation?** A CSS rule is **allowed** if it does one of three things:
 
-A CSS rule is **allowed** if it does one of three things:
+1. **Prevents a usability failure**: unreadable line length, invisible focus state, or content that can't be navigated to
 
-1. **Prevents a usability failure**: unreadable line length, an invisible focus state, layout shift, or content that can't be navigated to.
+1. **Communicates structure**: show "where am I" from "where can I go," or separating navigation from content
 
-1. **Communicates structure**: distinguishing "where am I" from "where can I go," or separating navigation from content.
-
-1. **Respects user or OS intent**: dark mode, reduced motion, system fonts.
+1. **Respects user or OS intent**: dark mode, reduced motion, system fonts
 
 A CSS rule is **rejected** if it only decorates: gradients, drop shadows, brand accent colours, rounded corners, hover animations, or anything whose only loss, if removed, is that the page looks less styled.
 
-The test to hold in your head while editing: *if I removed this rule, would a reader get lost, strain to read, or see the page jump?* If yes, keep it. If the only loss is decoration, cut it. Every constraint in the CSS integrity table passes this gate.
+## Features
+
+- **No JavaScript**: no `<script>` tags of any kind; `<details>` and CSS do the interactive work
+- **No external requests**: no linked stylesheets, web fonts, or CDN calls, just one inline `<style>` per page
+- **Dark mode**: follows the OS `prefers-color-scheme` setting, with no toggle, cookie, or flash
+- **Blog and docs**: a paginated blog with tags and per-tag feeds, plus a nested docs section with breadcrumbs
+- **Math**: LaTeX renders to native MathML at build time, so no KaTeX or MathJax ships to the reader
+- **Syntax highlighting**: Chroma highlights code at build time with inline styles, in a monochrome palette
+- **Images**: `embed`, `link-same-tab`, and `link-new-tab` modes, with `<figure>` captions and LCP-aware loading
+- **Accessible**: skip link, labelled landmarks, `aria-current`, and semantic HTML throughout
+- **SEO**: canonical URLs, Open Graph tags, Schema.org microdata, RSS autodiscovery, and a sitemap
+- **Shortcodes**: `sub`, `sup`, `mark`, and `abbr`
+
+See the theme running at **[letsblaze.thomaslaurenson.com](https://letsblaze.thomaslaurenson.com)**, which doubles as the documentation: [Installation](https://letsblaze.thomaslaurenson.com/docs/getting-started/installation/), [Configuration](https://letsblaze.thomaslaurenson.com/docs/getting-started/configuration/), [Features](https://letsblaze.thomaslaurenson.com/docs/reference/features/), and [Markdown](https://letsblaze.thomaslaurenson.com/docs/reference/markdown/).
 
 ## Installation
 
-letsblaze requires Hugo **0.146.0 or later** (it uses the current template system layout under `layouts/_partials`, `layouts/_markup`, and `layouts/_shortcodes`).
+### Requirements
+
+* Hugo **0.146.0 or later**
 
 ### Option 1: Git submodule (recommended)
 
@@ -46,6 +57,12 @@ Add letsblaze as a git submodule:
 
 ```bash
 git submodule add https://github.com/thomaslaurenson/letsblaze themes/letsblaze
+```
+
+Set the theme in your `hugo.toml`:
+
+```toml
+theme = "letsblaze"
 ```
 
 To update the theme later:
@@ -62,72 +79,33 @@ This method is beginner-friendly and has no Git dependency management.
 git clone https://github.com/thomaslaurenson/letsblaze themes/letsblaze
 ```
 
-To update, delete the folder and clone again, or `git pull` inside it.
-
-### Option 3: Hugo Modules
-
-Requires Go to be installed. Add the theme with `hugo mod`:
-
-```bash
-hugo mod get github.com/thomaslaurenson/letsblaze
-```
-
-### Set the theme
-
-For options 1 and 2, set the theme in your `hugo.toml`:
+Set the theme in your `hugo.toml`:
 
 ```toml
 theme = "letsblaze"
 ```
 
-For option 3 (Hugo Modules), import it instead:
+To update, delete the folder and clone again, or `git pull` inside it.
+
+### Option 3: Hugo Modules
+
+Requires Go to be installed. Your site must be a Hugo module:
+
+```bash
+hugo mod init github.com/<you>/<your-site>
+```
+
+Set the theme in your `hugo.toml`, using the full module path:
 
 ```toml
-[module]
-  [[module.imports]]
-    path = "github.com/thomaslaurenson/letsblaze"
+theme = "github.com/thomaslaurenson/letsblaze"
 ```
 
-### Logo (optional)
+Hugo downloads it on the next build. To update later:
 
-To use a custom logo instead of the plain text site title, create `layouts/partials/logo.html` in your site (not in the theme). Inline SVG is recommended, as it requires no extra HTTP request and stays consistent with the theme's no-external-resources philosophy.
-
-Example `layouts/partials/logo.html`:
-
-```html
-<a href="{{ .Site.Home.RelPermalink }}">
-  <svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" aria-label="{{ .Site.Title }}">
-    <!-- your SVG content here -->
-  </svg>
-</a>
+```bash
+hugo mod get -u github.com/thomaslaurenson/letsblaze
 ```
-
-## Math
-
-LaTeX math renders to native MathML at build time via Hugo's `transform.ToMath` (KaTeX, run inside Hugo). The browser renders the `<math>` markup itself, so no JavaScript and no external stylesheet ship to the reader. This keeps math fully inside the R-series network rules below.
-
-Math is **opt-in**, because Hugo does not merge a theme's `markup` configuration into consuming sites. Enable the passthrough extension in your `hugo.toml`:
-
-```toml
-[markup.goldmark.extensions.passthrough]
-  enable = true
-  [markup.goldmark.extensions.passthrough.delimiters]
-    block  = [['$$', '$$'], ['\[', '\]']]
-    inline = [['\(', '\)']]
-```
-
-Display math then uses `$$...$$` or `\[...\]`, and inline math uses `\(...\)`. Single `$` is intentionally not a delimiter, so prices and shell variables in prose are never misparsed. The conversion is handled by `layouts/_markup/render-passthrough.html`.
-
-## Images
-
-In the default `embed` mode a standalone image renders as a `<figure>`, with its title as the `<figcaption>`. Goldmark wraps a standalone image in a paragraph unless told otherwise, and a `<figure>` inside a `<p>` is invalid HTML, so the hook only emits one when the site enables this in its `hugo.toml` (Hugo does not merge a theme's `markup` configuration):
-
-```toml
-[markup.goldmark.parser]
-  wrapStandAloneImageWithinParagraph = false
-```
-
-Without it every image renders as a bare `<img>` inside its paragraph and the title becomes a `title` attribute. See S6 in the constraints below for the loading and link modes.
 
 ## Constraints
 
@@ -185,9 +163,9 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | S1 | **Skip link**: `<a href="#main-content">Skip to content</a>` on every page |
 | S2 | **`aria-label` on every `<nav>`** |
 | S3 | **`aria-current="page"` on the active nav link** |
-| S4 | **Site title as bare `<a>`** on every page, reserves `<h1>` for page content. Optionally replaced by a custom logo partial (see [Logo](#logo-optional)). |
+| S4 | **Site title as bare `<a>`** on every page, reserves `<h1>` for page content. Optionally replaced by a custom logo partial (see [Logo](https://letsblaze.thomaslaurenson.com/docs/getting-started/configuration/#logo-optional)). |
 | S5 | **`<time datetime="...">`** on blog post dates |
-| S6 | **Image rendering controlled by `imageMode` param**: three modes: `embed` (default): wraps a standalone image in `<figure>` (see [Images](#images)) and renders any other image as a bare `<img>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
+| S6 | **Image rendering controlled by `imageMode` param**: three modes: `embed` (default): wraps a standalone image in `<figure>` (see [Images](https://letsblaze.thomaslaurenson.com/docs/reference/features/#images)) and renders any other image as a bare `<img>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
 | S7 | **Breadcrumb navigation**: `<nav aria-label="Breadcrumb">` with `<ol>` on every blog post page and every docs page below the docs root, which has no ancestors to show; breadcrumb walks `.Ancestors` so arbitrary nesting depth is supported. |
 
 ### SEO and metadata
