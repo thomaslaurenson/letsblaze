@@ -34,7 +34,7 @@ A CSS rule is **allowed** if it does one of three things:
 
 A CSS rule is **rejected** if it only decorates: gradients, drop shadows, brand accent colours, rounded corners, hover animations, or anything whose only loss, if removed, is that the page looks less styled.
 
-The test to hold in your head while editing: *if I removed this rule, would a reader get lost, strain to read, or see the page jump?* If yes, keep it. If the only loss is decoration, cut it. Every constraint in the CSS Integrity table passes this gate.
+The test to hold in your head while editing: *if I removed this rule, would a reader get lost, strain to read, or see the page jump?* If yes, keep it. If the only loss is decoration, cut it. Every constraint in the CSS integrity table passes this gate.
 
 ## Installation
 
@@ -136,9 +136,9 @@ Every design decision is governed by a numbered constraint. These identifiers ar
 Constraints are grouped by category with a category prefix:
 
 - **R**: Resources & CSS authoring
-- **C**: CSS Integrity
+- **C**: CSS integrity
 - **S**: Semantic HTML
-- **M**: SEO & Metadata
+- **M**: SEO & metadata
 
 ### Resources & CSS authoring
 
@@ -150,7 +150,7 @@ Constraints are grouped by category with a category prefix:
 | R4 | **No inline `style=`**: no `style=` attributes on HTML elements (Chroma `<span>` and `<pre>` are exempt). Code fence line numbers are ignored because Chroma renders them as a `<table>` with inline styles; `hl_lines` is honoured. Hugo's default table output aligns cells with `style="text-align"`, so the theme's table render hook writes `data-align` attributes instead (see C17). |
 | R5 | **No CSS frameworks or utility classes**: no Tailwind/Bootstrap/etc., no atomic or utility classes (e.g. `mt-4`, `flex`), and no class used purely for decoration. Semantic classes that *name a structural region* (e.g. `docs-sidebar`, `breadcrumb`) are permitted, because they enable structure-communicating CSS that is already inline and costs no request. Chroma and Goldmark footnote classes remain exempt. |
 
-### CSS Integrity
+### CSS integrity
 
 All CSS is inline inside a `<style>` block in `<head>`, in `layouts/_partials/head-styles.html`. Every rule has an explicit justification.
 
@@ -178,7 +178,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | C18 | **`li + li::before { content: " / " / "" }`** in the header and breadcrumb navs | Separates inline nav items so they do not run together. The alternative-text form hides the glyph from screen readers, which would otherwise announce it |
 | C19 | **`.post-meta { display: grid }`** | Lays the blog post date, tags and author out as label and value columns, so the block reads as metadata rather than as body text and stays compact; `.post-meta dt` is bold to mark the labels |
 
-### Semantic HTML and Accessibility
+### Semantic HTML and accessibility
 
 | ID | Constraint |
 |---|---|
@@ -190,7 +190,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | S6 | **Image rendering controlled by `imageMode` param**: three modes: `embed` (default): wraps a standalone image in `<figure>` (see [Images](#images)) and renders any other image as a bare `<img>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
 | S7 | **Breadcrumb navigation**: `<nav aria-label="Breadcrumb">` with `<ol>` on every blog post page and every docs page below the docs root, which has no ancestors to show; breadcrumb walks `.Ancestors` so arbitrary nesting depth is supported. |
 
-### SEO and Metadata
+### SEO and metadata
 
 | ID | Constraint |
 |---|---|
