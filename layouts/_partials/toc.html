@@ -1,0 +1,8 @@
+{{ with .TableOfContents }}
+  {{ if ge (len (findRE "<li>" . )) 3 }}
+  <details class="toc">
+    <summary>On this page</summary>
+    {{ . }}
+  </details>
+  {{ end }}
+{{ end }}

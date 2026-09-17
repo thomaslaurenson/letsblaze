@@ -2,14 +2,7 @@
 {{ partial "breadcrumb.html" . }}
 <article>
   <h1>{{ .Title }}</h1>
-  {{ with .TableOfContents }}
-    {{ if ge (len (findRE "<li>" . )) 3 }}
-    <details class="toc">
-      <summary>On this page</summary>
-      {{ . }}
-    </details>
-    {{ end }}
-  {{ end }}
+  {{ partial "toc.html" . }}
   {{ .Content }}
 </article>
 <hr>
