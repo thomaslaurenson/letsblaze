@@ -147,7 +147,7 @@ Constraints are grouped by category with a category prefix:
 | R1 | **No JavaScript**: no `<script>` tags of any kind |
 | R2 | **No external CSS**: no `rel="stylesheet"` links |
 | R3 | **No CDN resources**: no cdn., fonts.googleapis, or fonts.gstatic URLs |
-| R4 | **No inline `style=`**: no `style=` attributes on HTML elements (Chroma `<span>` and `<pre>` are exempt). Code fence line numbers are ignored because Chroma renders them as a `<table>` with inline styles; `hl_lines` is honoured. |
+| R4 | **No inline `style=`**: no `style=` attributes on HTML elements (Chroma `<span>` and `<pre>` are exempt). Code fence line numbers are ignored because Chroma renders them as a `<table>` with inline styles; `hl_lines` is honoured. Hugo's default table output aligns cells with `style="text-align"`, so the theme's table render hook writes `data-align` attributes instead (see C17). |
 | R5 | **No CSS frameworks or utility classes**: no Tailwind/Bootstrap/etc., no atomic or utility classes (e.g. `mt-4`, `flex`), and no class used purely for decoration. Semantic classes that *name a structural region* (e.g. `docs-sidebar`, `breadcrumb`) are permitted, because they enable structure-communicating CSS that is already inline and costs no request. Chroma and Goldmark footnote classes remain exempt. |
 
 ### CSS Integrity
@@ -160,19 +160,23 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 |---|---|---|
 | C1  | **CSS inline in `<head>`** | No linked file = no extra HTTP request, no render blocking, no FOUC |
 | C2  | **Skip link hidden off-screen** | `position: absolute; left: -9999px`, revealed on `:focus` with `z-index: 1`, `background`, and `padding` to ensure visibility |
-| C3  | **`body { max-width: 100ch }`** | Prevents unreadable line lengths on wide viewports |
+| C3  | **`body { max-width: 100ch; margin: 0 auto; padding: 1rem }`** | Prevents unreadable line lengths on wide viewports; the auto margin centres the column and the padding keeps text off the viewport edge on narrow screens |
 | C4  | **`body { line-height: 1.6 }`** | Browser default is too tight for comfortable reading |
 | C5  | **`img { max-width: 100%; height: auto }`** | Responsive images; `height: auto` prevents CLS alongside explicit `width`/`height` attributes |
 | C6  | **`table { border-collapse: collapse }`** | `.table-wrap { overflow-x: auto }` on the wrapper emitted by the table render hook confines horizontal scroll to the table itself, so the page never scrolls sideways. A wrapper is used rather than `display: block` on the table because changing a table's display strips its semantics in some browsers, notably Safari |
-| C7  | **`nav ul { list-style: none }`** | Removes browser bullet and indent defaults from all nav lists |
+| C7  | **`nav ul { list-style: none; margin: 0; padding: 0 }`** | Removes browser bullet and indent defaults from all nav lists; the breadcrumb `<ol>` gets the same reset |
 | C8  | **`[aria-current="page"] { font-weight: bold }`** | Active-link indicator without a class |
-| C9  | **Dark mode via `prefers-color-scheme: dark`** | Follows OS preference (no JavaScript, no toggle, no cookie) |
+| C9  | **Dark mode via `prefers-color-scheme: dark`** | Follows OS preference (no JavaScript, no toggle, no cookie). The block restyles the body, links, inline code, `<mark>`, table borders and the skip link so each keeps readable contrast on the dark background; fenced code keeps Chroma's own inline colours |
 | C10 | **`pre { overflow-x: auto }`** | Wide code blocks scroll horizontally instead of being clipped |
 | C11 | **`body { font-size: 18px }`** | Browser default (16px) is too small for comfortable long-form reading |
 | C12 | *Retired* | Post lists are `<ul>` elements, so the former `article + article` spacing rule matched nothing and was removed. The number is kept so older references still resolve |
 | C13 | **`math[display="block"] { overflow-x: auto }`** | Wide display equations scroll horizontally within their own box instead of overflowing the page, mirroring C6 (tables) and C10 (code) |
-| C14 | **`nav[aria-label="Tags"] ul li { display: inline }`** | Keeps the blog tag cloud compact instead of one tag per line, while the list markup lets assistive technology announce how many tags there are |
+| C14 | **`li { display: inline }` in the header, breadcrumb and tag navs** | Lays navigation out on one line so it reads as a strip separate from the content, instead of a vertical list that pushes the page down; the list markup stays so assistive technology still announces item counts |
 | C15 | **`:root { color-scheme: light dark }`** | Tells the browser both schemes are supported, so scrollbars, form controls and the `<details>` marker follow the OS preference instead of staying light; C9 only restyles the theme's own elements |
+| C16 | **`th, td { border: 1px solid; padding: 0.4rem 0.8rem }`** | Cell borders and padding keep tabular data readable; without them columns run together and rows cannot be followed across |
+| C17 | **`[data-align] { text-align }`** | Honours the column alignment the author wrote in Markdown. Hugo's default table output does this with `style="text-align"`, which R4 forbids, so `layouts/_markup/render-table.html` emits `data-align` attributes instead |
+| C18 | **`li + li::before { content: " / " / "" }`** in the header and breadcrumb navs | Separates inline nav items so they do not run together. The alternative-text form hides the glyph from screen readers, which would otherwise announce it |
+| C19 | **`.post-meta { display: grid }`** | Lays the blog post date, tags and author out as label and value columns, so the block reads as metadata rather than as body text and stays compact; `.post-meta dt` is bold to mark the labels |
 
 ### Semantic HTML and Accessibility
 
@@ -184,7 +188,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | S4 | **Site title as bare `<a>`** on every page, reserves `<h1>` for page content. Optionally replaced by a custom logo partial (see [Logo](#logo-optional)). |
 | S5 | **`<time datetime="...">`** on blog post dates |
 | S6 | **Image rendering controlled by `imageMode` param**: three modes: `embed` (default): wraps a standalone image in `<figure>` (see [Images](#images)) and renders any other image as a bare `<img>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
-| S7 | **Breadcrumb navigation**: `<nav aria-label="Breadcrumb">` with `<ol>` on every docs page and every blog post page; breadcrumb walks `.Ancestors` so arbitrary nesting depth is supported. |
+| S7 | **Breadcrumb navigation**: `<nav aria-label="Breadcrumb">` with `<ol>` on every blog post page and every docs page below the docs root, which has no ancestors to show; breadcrumb walks `.Ancestors` so arbitrary nesting depth is supported. |
 
 ### SEO and Metadata
 

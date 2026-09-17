@@ -274,8 +274,8 @@ main() {
   report_hits "[R5] No frameworks or utility classes" "${hits}"
   printf '\n'
 
-  # 4. Constraints: CSS Integrity (C1-C15)
-  printf '=== 4. C1-C15: CSS Integrity ===\n'
+  # 4. Constraints: CSS Integrity (C1-C19)
+  printf '=== 4. C1-C19: CSS Integrity ===\n'
 
   # C1: CSS delivered inline inside <style> in <head> on all pages
   check_head_all "[C1] CSS inline in head" '<style>' "${all_pages[@]}"
@@ -296,14 +296,28 @@ main() {
     'table { border-collapse: collapse; }' \
     '.table-wrap { overflow-x: auto; }'
   check_file "[C6] Table wrapper emitted" "${page_markdown}" '<div class="table-wrap">'
-  check_style "[C7] Nav reset CSS" 'nav ul { list-style: none; margin: 0; padding: 0; }'
+  check_style "[C7] Nav reset CSS" \
+    'nav ul { list-style: none; margin: 0; padding: 0; }' \
+    'nav[aria-label="Breadcrumb"] ol { list-style: none; margin: 0; padding: 0; }'
   check_style "[C8] Active nav CSS" '[aria-current="page"] { font-weight: bold; }'
   check_style "[C9] Dark mode CSS" '@media (prefers-color-scheme: dark)'
   check_style "[C10] Pre overflow CSS" 'pre { overflow-x: auto; }'
   check_style "[C11] Body font-size CSS" 'font-size: 18px;'
   check_style "[C13] Math block overflow CSS" 'math[display="block"] { display: block; overflow-x: auto;'
-  check_style "[C14] Tag list inline CSS" 'nav[aria-label="Tags"] ul li { display: inline; }'
+  check_style "[C14] Inline nav items CSS" \
+    'header nav ul li { display: inline; }' \
+    'nav[aria-label="Breadcrumb"] ol li { display: inline; }' \
+    'nav[aria-label="Tags"] ul li { display: inline; }'
   check_style "[C15] Colour scheme CSS" ':root { color-scheme: light dark; }'
+  check_style "[C16] Table cell CSS" 'th, td { border: 1px solid; padding: 0.4rem 0.8rem; }'
+  check_style "[C17] Table alignment CSS" \
+    '[data-align="left"]' '[data-align="center"]' '[data-align="right"]'
+  check_file "[C17] Table hook emits data-align" "${page_markdown}" 'data-align="'
+  check_style "[C18] Nav separator CSS" \
+    'header nav ul li + li::before { content: " / " / ""; }' \
+    'nav[aria-label="Breadcrumb"] ol li + li::before { content: " \203A " / ""; }'
+  check_style "[C19] Post metadata grid CSS" \
+    '.post-meta { display: grid;' '.post-meta dt { font-weight: bold; }'
 
   # Math renders to native MathML at build time (render-passthrough.html + the
   # passthrough delimiters in exampleSite/hugo.toml). This also gives the R1/R4/R5
