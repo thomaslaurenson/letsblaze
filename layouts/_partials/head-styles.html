@@ -37,9 +37,7 @@
     body { background-color: #111; color: #ddd; }
     a { color: #6ab0f5; }
     a:visited { color: #c9a0f5; }
-    pre { background-color: #1e1e1e; }
-    code { background-color: #1e1e1e; color: #ddd; }
-    details, summary { color: #ddd; }
+    :not(pre) > code { background-color: #1e1e1e; color: #ddd; }
     mark { background-color: #5a4a00; color: #fff; }
     table, th, td { border-color: #444; }
     .skip-link:focus { background: #111; }
