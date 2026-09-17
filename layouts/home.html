@@ -2,19 +2,15 @@
 {{ with .Site.Params.description }}<p>{{ . }}</p>{{ end }}
 
 <h2>Blog</h2>
-{{ $posts := (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
-{{ $currentYear := 0 }}
-{{ range $posts }}
-  {{ $year := .Date.Year }}
-  {{ if ne $year $currentYear }}
-    {{ if ne $currentYear 0 }}</ul>{{ end }}
-    <h3>{{ $year }}</h3>
-    <ul>
-    {{ $currentYear = $year }}
-  {{ end }}
-  <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+{{ $posts := where .Site.RegularPages "Section" "blog" }}
+{{ range $posts.GroupByDate "2006" }}
+  <h3>{{ .Key }}</h3>
+  <ul>
+    {{ range .Pages }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{ end }}
+  </ul>
 {{ end }}
-{{ if ne $currentYear 0 }}</ul>{{ end }}
 
 <h2>Docs</h2>
 {{ $docs := .Site.GetPage "/docs" }}
