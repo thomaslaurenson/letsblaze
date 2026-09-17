@@ -9,11 +9,9 @@ set -euo pipefail
 
 die() { printf '[!] %s\n' "$*" >&2; exit 1; }
 
-readonly THEME="letsblaze"
 readonly SITE_DIR="exampleSite"
 readonly CONTENT_DIR="${SITE_DIR}/content"
 readonly PUBLIC="${SITE_DIR}/public"
-readonly HUGO_FLAGS=(--themesDir ../.. --theme "${THEME}")
 # The deploy workflow ships a minified build, so the resource checks run over
 # one of those too. The other checks match on whitespace and use the plain build.
 PUBLIC_MIN="$(mktemp -d)"
@@ -153,9 +151,9 @@ main() {
   # 1. Build
   printf '=== 1. Build ===\n'
   rm -rf "${PUBLIC}"
-  (cd "${SITE_DIR}" && hugo "${HUGO_FLAGS[@]}" 2>&1) \
+  (cd "${SITE_DIR}" && hugo 2>&1) \
     || die "hugo build failed, aborting tests"
-  (cd "${SITE_DIR}" && hugo "${HUGO_FLAGS[@]}" --minify --quiet -d "${PUBLIC_MIN}" 2>&1) \
+  (cd "${SITE_DIR}" && hugo --minify --quiet -d "${PUBLIC_MIN}" 2>&1) \
     || die "minified hugo build failed, aborting tests"
   printf '\n'
 

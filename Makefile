@@ -1,10 +1,8 @@
 SHELL := /bin/bash
 
-THEME      := letsblaze
-SITE_DIR   := exampleSite
-PUBLIC     := $(SITE_DIR)/public
-HUGO_FLAGS := --themesDir ../.. --theme $(THEME)
-SCRIPTS    := scripts/test.sh
+SITE_DIR := exampleSite
+PUBLIC   := $(SITE_DIR)/public
+SCRIPTS  := scripts/test.sh
 
 ##@ BUILD
 
@@ -15,11 +13,11 @@ help: ## Show this help message
 
 .PHONY: build
 build: ## Build the exampleSite into public/
-	cd $(SITE_DIR) && hugo $(HUGO_FLAGS)
+	cd $(SITE_DIR) && hugo
 
 .PHONY: serve
 serve: ## Start a local development server with live reload
-	cd $(SITE_DIR) && hugo server $(HUGO_FLAGS)
+	cd $(SITE_DIR) && hugo server
 
 ##@ TEST
 
@@ -41,11 +39,11 @@ check_lint: ## Run shellcheck over every script
 
 .PHONY: new_post
 new_post: ## Create a new blog post (usage: make new_post NAME=my-post-title)
-	cd $(SITE_DIR) && hugo new $(HUGO_FLAGS) blog/$(NAME).md
+	cd $(SITE_DIR) && hugo new blog/$(NAME).md
 
 .PHONY: new_doc
 new_doc: ## Create a new doc page (usage: make new_doc NAME=section/my-page)
-	cd $(SITE_DIR) && hugo new $(HUGO_FLAGS) docs/$(NAME).md
+	cd $(SITE_DIR) && hugo new docs/$(NAME).md
 
 ##@ CI
 
