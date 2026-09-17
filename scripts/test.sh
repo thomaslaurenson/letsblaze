@@ -296,9 +296,12 @@ printf '=== 5. S1-S7: Semantic HTML & Accessibility ===\n'
 check_all "[S1] Skip link element" 'Skip to content' "${ALL_PAGES[@]}"
 
 # S2: aria-label on every <nav>, checked per element rather than once per page
+# The inverted match is captured rather than tested with -q because ugrep, which
+# some systems install as grep, returns 1 from "grep -qv" even when a line matches.
 S2_FAIL=()
 for page in "${ALL_PAGES[@]}"; do
-  if grep -o '<nav[^>]*>' "${page}" | grep -qv 'aria-label='; then
+  UNLABELLED="$(grep -o '<nav[^>]*>' "${page}" | grep -v 'aria-label=' || true)"
+  if [[ -n "${UNLABELLED}" ]]; then
     S2_FAIL+=("${page##${PUBLIC}/}")
   fi
 done
