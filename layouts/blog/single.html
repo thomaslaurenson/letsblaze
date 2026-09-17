@@ -5,9 +5,9 @@
   <dl>
     <dt>Date</dt>
     <dd><time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02") }}</time></dd>
-    {{ if .GetTerms "tags" }}
+    {{ with .GetTerms "tags" }}
     <dt>Tags</dt>
-    <dd>{{ range .GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</dd>
+    <dd>{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</dd>
     {{ end }}
     {{ with .Site.Params.author }}
     <dt>Author</dt>
