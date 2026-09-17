@@ -251,6 +251,8 @@ grep -q 'height: auto' "${PAGE_HOME}" \
   || fail "[C5] Image responsive CSS"
 
 grep -q 'border-collapse' "${PAGE_HOME}" \
+  && grep -q '\.table-wrap { overflow-x: auto' "${PAGE_HOME}" \
+  && grep -q '<div class="table-wrap">' "${PAGE_MARKDOWN}" \
   && pass "[C6] Table border CSS" \
   || fail "[C6] Table border CSS"
 

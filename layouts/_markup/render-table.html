@@ -1,3 +1,5 @@
+{{/* The wrapper scrolls wide tables; changing display on the table itself strips its semantics in some browsers */}}
+<div class="table-wrap">
 <table>
   <thead>
     {{- range .THead }}
@@ -18,3 +20,4 @@
     {{- end }}
   </tbody>
 </table>
+</div>
