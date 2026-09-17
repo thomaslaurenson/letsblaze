@@ -2,12 +2,12 @@
 {{ partial "breadcrumb.html" . }}
 <article itemscope itemtype="https://schema.org/BlogPosting">
   <h1 itemprop="headline">{{ .Title }}</h1>
-  <dl>
+  <dl class="post-meta">
     <dt>Date</dt>
     <dd><time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02") }}</time></dd>
-    {{ if .GetTerms "tags" }}
+    {{ with .GetTerms "tags" }}
     <dt>Tags</dt>
-    <dd>{{ range .GetTerms "tags" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</dd>
+    <dd>{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> {{ end }}</dd>
     {{ end }}
     {{ with .Site.Params.author }}
     <dt>Author</dt>
@@ -15,20 +15,9 @@
     {{ end }}
   </dl>
   <hr>
-  {{ with .TableOfContents }}
-    {{ if ge (len (findRE "<li>" . )) 3 }}
-    <details class="toc">
-      <summary>On this page</summary>
-      {{ . }}
-    </details>
-    {{ end }}
-  {{ end }}
+  {{ partial "toc.html" . }}
   {{ .Content }}
 </article>
 <hr>
-<nav aria-label="Post navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous post: {{ .Title }}">prev - {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} - {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next post: {{ .Title }}">next - {{ .Title }}</a>{{ end }}
-</nav>
+{{ partial "prev-next.html" (dict "prev" .PrevInSection "next" .NextInSection "label" "Post navigation") }}
 {{ end }}

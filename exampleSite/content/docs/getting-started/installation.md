@@ -2,6 +2,7 @@
 title: "Installation"
 date: 2026-01-01
 draft: false
+weight: 1
 description: "How to install the letsblaze Hugo theme as a git submodule, Hugo module, or manual download."
 ---
 

@@ -14,13 +14,16 @@ The `imageMode` param controls how Markdown images are rendered. Set it site-wid
 
 | Value | Output |
 |-------|--------|
-| `embed` (default) | Wraps the image in a `<figure>` element |
+| `embed` (default) | Wraps a standalone image in a `<figure>` element, renders any other image as a bare `<img>` |
 | `link-same-tab` | Renders a bare `<a>` link using the alt text as link text |
 | `link-new-tab` | Same as `link-same-tab` but opens in a new tab with `rel="noopener noreferrer"` |
 
-Site-wide in `hugo.toml`:
+Site-wide in `hugo.toml`. The parser setting is what lets a standalone image become a `<figure>`; without it, Goldmark keeps the image inside a paragraph and the hook emits a bare `<img>` there:
 
 ```toml
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false
+
 [params]
   imageMode = "embed"
 ```
@@ -45,8 +48,8 @@ The recommended way to use images is as page bundles: store the image alongside 
 content/
   blog/
     working-with-images/
-      index.md        ← this file
-      hero.jpg        ← image in the same directory
+      index.md        <- this file
+      hero.jpg        <- image in the same directory
 ```
 
 This is a leaf bundle. Hugo can read the image dimensions at build time and emit `width` and `height` attributes automatically, preventing layout shift (CLS).

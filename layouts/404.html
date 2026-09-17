@@ -7,8 +7,8 @@
   <h1>404 - Page not found</h1>
   <p>The page you were looking for does not exist.</p>
   <ul>
-    <li><a href="/">Go home</a></li>
-    <li><a href="/sitemap.xml">Browse the sitemap</a></li>
+    <li><a href="{{ .Site.Home.RelPermalink }}">Go home</a></li>
+    <li><a href="{{ "sitemap.xml" | relURL }}">Browse the sitemap</a></li>
   </ul>
 </article>
 {{ end }}

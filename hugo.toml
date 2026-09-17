@@ -1,0 +1,6 @@
+# Theme module configuration. Hugo warns when a site builds this theme with an
+# older release; the template layout under layouts/_partials, layouts/_markup
+# and layouts/_shortcodes needs 0.146.0 or later.
+[module]
+  [module.hugoVersion]
+    min = "0.146.0"

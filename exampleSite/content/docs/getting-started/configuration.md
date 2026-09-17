@@ -2,6 +2,7 @@
 title: "Configuration"
 date: 2026-01-01
 draft: false
+weight: 2
 description: "All configuration options for the letsblaze Hugo theme."
 ---
 
@@ -22,6 +23,24 @@ All letsblaze configuration lives in `hugo.toml`. Below is a complete reference 
 [pagination]
   pagerSize = 10
 ```
+
+## Taxonomies
+
+```toml
+[taxonomies]
+  tag = "tags"
+```
+
+letsblaze ships layouts for tags only. Listing just `tags` stops Hugo generating the default `categories` pages and feed that nothing links to.
+
+## Front matter
+
+```toml
+[frontmatter]
+  date = [":filename", ":default"]
+```
+
+A blog post named `YYYY-MM-DD-my-post.md` takes its date from the filename and its slug from the rest, so `make new_post NAME=2026-09-17-my-post` publishes at `/blog/my-post/` with a clean title. A file without the prefix falls back to the `date` in its front matter.
 
 ## Markup
 

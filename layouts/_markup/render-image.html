@@ -8,14 +8,18 @@
     {{ $loading = "eager" }}
     {{ $fetchpriority = "high" }}
   {{ end }}
-  <figure>
-    {{ if $img }}
-      <img src="{{ .Destination }}" alt="{{ .Text }}" width="{{ $img.Width }}" height="{{ $img.Height }}" loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
-    {{ else }}
-      <img src="{{ .Destination }}" alt="{{ .Text }}" loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
-    {{ end }}
+  {{/*
+    A figure is flow content and is not valid inside a paragraph. IsBlock is
+    true only for a standalone image when the site sets
+    markup.goldmark.parser.wrapStandAloneImageWithinParagraph = false, so any
+    other image renders as a bare img
+  */}}
+  {{ if .IsBlock }}<figure>{{ end }}
+  <img src="{{ .Destination }}" alt="{{ .Text }}"{{ with $img }} width="{{ .Width }}" height="{{ .Height }}"{{ end }}{{ if and .Title (not .IsBlock) }} title="{{ .Title }}"{{ end }} loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}>
+  {{ if .IsBlock }}
     {{ with .Title }}<figcaption>{{ . }}</figcaption>{{ end }}
   </figure>
+  {{ end }}
 {{ else if eq $imageMode "link-same-tab" }}
   <a href="{{ .Destination }}">{{ .Text }}</a>
 {{ else if eq $imageMode "link-new-tab" }}

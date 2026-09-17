@@ -13,8 +13,17 @@ disableHugoGeneratorInject = false  # intentional, we like Hugo
 [pagination]
   pagerSize = 10
 
+[frontmatter]
+  date = [":filename", ":default"]  # a YYYY-MM-DD- filename prefix sets the date and the slug
+
 [permalinks]
   blog = "/blog/:slug/"
+
+[taxonomies]
+  tag = "tags"  # letsblaze ships layouts for tags only, so categories are not generated
+
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false  # lets the image hook wrap a standalone image in <figure>
 
 [markup.goldmark.renderer]
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)

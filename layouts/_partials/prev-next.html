@@ -1,0 +1,13 @@
+{{/*
+  Previous and next links between sibling pages.
+
+  Params:
+    prev  - page to link as "prev", or nil
+    next  - page to link as "next", or nil
+    label - aria-label for the nav
+*/}}
+<nav aria-label="{{ .label }}">
+  {{ with .prev }}<a href="{{ .RelPermalink }}">prev - {{ .Title }}</a>{{ end }}
+  {{ if and .prev .next }} - {{ end }}
+  {{ with .next }}<a href="{{ .RelPermalink }}">next - {{ .Title }}</a>{{ end }}
+</nav>
