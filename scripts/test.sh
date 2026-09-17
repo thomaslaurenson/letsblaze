@@ -274,10 +274,6 @@ grep -q 'font-size: 18px' "${PAGE_HOME}" \
   && pass "[C11] Body font-size CSS" \
   || fail "[C11] Body font-size CSS"
 
-grep -q 'margin-top: 2rem' "${PAGE_HOME}" \
-  && pass "[C12] Article spacing CSS" \
-  || fail "[C12] Article spacing CSS"
-
 grep -q 'math\[display="block"\]' "${PAGE_HOME}" \
   && pass "[C13] Math block overflow CSS" \
   || fail "[C13] Math block overflow CSS"

@@ -169,7 +169,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | C9  | **Dark mode via `prefers-color-scheme: dark`** | Follows OS preference (no JavaScript, no toggle, no cookie) |
 | C10 | **`pre { overflow-x: auto }`** | Wide code blocks scroll horizontally instead of being clipped |
 | C11 | **`body { font-size: 18px }`** | Browser default (16px) is too small for comfortable long-form reading |
-| C12 | **`article + article { margin-top: 2rem }`** | Separates post list entries with whitespace instead of `<hr>` for a cleaner visual rhythm |
+| C12 | *Retired* | Post lists are `<ul>` elements, so the former `article + article` spacing rule matched nothing and was removed. The number is kept so older references still resolve |
 | C13 | **`math[display="block"] { overflow-x: auto }`** | Wide display equations scroll horizontally within their own box instead of overflowing the page, mirroring C6 (tables) and C10 (code) |
 | C14 | **`nav[aria-label="Tags"] ul li { display: inline }`** | Keeps the blog tag cloud compact instead of one tag per line, while the list markup lets assistive technology announce how many tags there are |
 

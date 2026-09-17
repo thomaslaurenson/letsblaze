@@ -1,6 +1,6 @@
 {{ with .TableOfContents }}
   {{ if ge (len (findRE "<li>" . )) 3 }}
-  <details class="toc">
+  <details>
     <summary>On this page</summary>
     {{/* Hugo emits the nav without a label, so add one to satisfy S2 */}}
     {{ replace . `<nav id="TableOfContents">` `<nav id="TableOfContents" aria-label="Table of contents">` | safeHTML }}
