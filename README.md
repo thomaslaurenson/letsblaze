@@ -118,6 +118,17 @@ Math is **opt-in**, because Hugo does not merge a theme's `markup` configuration
 
 Display math then uses `$$...$$` or `\[...\]`, and inline math uses `\(...\)`. Single `$` is intentionally not a delimiter, so prices and shell variables in prose are never misparsed. The conversion is handled by `layouts/_markup/render-passthrough.html`.
 
+## Images
+
+In the default `embed` mode a standalone image renders as a `<figure>`, with its title as the `<figcaption>`. Goldmark wraps a standalone image in a paragraph unless told otherwise, and a `<figure>` inside a `<p>` is invalid HTML, so the hook only emits one when the site enables this in its `hugo.toml` (Hugo does not merge a theme's `markup` configuration):
+
+```toml
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false
+```
+
+Without it every image renders as a bare `<img>` inside its paragraph and the title becomes a `title` attribute. See S6 in the constraints below for the loading and link modes.
+
 ## Constraints
 
 Every design decision is governed by a numbered constraint. These identifiers are used in `scripts/test.sh` so test failures trace directly to this document.
@@ -170,7 +181,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | S3 | **`aria-current="page"` on the active nav link** |
 | S4 | **Site title as bare `<a>`** on every page, reserves `<h1>` for page content. Optionally replaced by a custom logo partial (see [Logo](#logo-optional)). |
 | S5 | **`<time datetime="...">`** on blog post dates |
-| S6 | **Image rendering controlled by `imageMode` param**: three modes: `embed` (default): wraps image in `<figure>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
+| S6 | **Image rendering controlled by `imageMode` param**: three modes: `embed` (default): wraps a standalone image in `<figure>` (see [Images](#images)) and renders any other image as a bare `<img>`, first image on page uses `loading="eager" fetchpriority="high"`, subsequent images use `loading="lazy"`; `link-same-tab`: renders a bare `<a>` link using alt text; `link-new-tab`: same with `target="_blank" rel="noopener noreferrer"`. Overridable per-page in front matter. |
 | S7 | **Breadcrumb navigation**: `<nav aria-label="Breadcrumb">` with `<ol>` on every docs page and every blog post page; breadcrumb walks `.Ancestors` so arbitrary nesting depth is supported. |
 
 ### SEO and Metadata

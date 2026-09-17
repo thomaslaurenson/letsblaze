@@ -61,7 +61,7 @@ A sitemap is generated automatically at `/sitemap.xml`. With `enableGitInfo = tr
 
 ## Images
 
-The `imageMode` param controls how Markdown images are rendered. Three modes are supported: `embed` (default), `link-same-tab`, and `link-new-tab`. Set it site-wide in `hugo.toml` or per-page in front matter. In `embed` mode, the first image on a page uses `loading="eager" fetchpriority="high"` for LCP; subsequent
+The `imageMode` param controls how Markdown images are rendered. Three modes are supported: `embed` (default), `link-same-tab`, and `link-new-tab`. Set it site-wide in `hugo.toml` or per-page in front matter. A standalone image becomes a `<figure>` when the site sets `wrapStandAloneImageWithinParagraph = false`. In `embed` mode, the first image on a page uses `loading="eager" fetchpriority="high"` for LCP; subsequent
 images use `loading="lazy"`. See [Working with Images](/blog/working-with-images/) for full details.
 
 ## Shortcodes

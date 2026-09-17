@@ -16,6 +16,9 @@ disableHugoGeneratorInject = false  # intentional, we like Hugo
 [permalinks]
   blog = "/blog/:slug/"
 
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false  # lets the image hook wrap a standalone image in <figure>
+
 [markup.goldmark.renderer]
   unsafe = true             # allow raw HTML in content files (e.g. <del>, <mark>, <kbd>)
 
