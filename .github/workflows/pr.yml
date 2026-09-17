@@ -1,0 +1,21 @@
+name: PR
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "Makefile"
+      - "exampleSite/**"
+      - "layouts/**"
+      - "scripts/**"
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
