@@ -77,6 +77,29 @@ check_head_all() {
   fi
 }
 
+# Check that the inline style block contains every CSS fragment given.
+#
+# Arguments:
+#   $1 - Label for the test output
+#   $@ - Fixed-string fragments that must all appear (after shift 1)
+# Globals:
+#   STYLE - the <style> block of the home page, read only
+# Outputs:
+#   stdout: PASS or FAIL line, with the first missing fragment on failure
+check_style() {
+  local label="${1}"
+  shift
+  local fragment
+  for fragment in "$@"; do
+    if ! grep -qF -- "${fragment}" <<< "${STYLE}"; then
+      fail "${label}"
+      printf '        missing rule: %s\n' "${fragment}"
+      return
+    fi
+  done
+  pass "${label}"
+}
+
 # 1. Build
 printf '=== 1. Build ===\n'
 rm -rf "${PUBLIC}"
@@ -230,63 +253,31 @@ else
   printf '        no <style> in <head>: %s\n' "${C1_FAIL[@]}"
 fi
 
-# C2-C12: CSS rules verified against the home page <style> block.
-# All pages share the same inline styles; home is a reliable proxy.
-grep -q 'position: absolute' "${PAGE_HOME}" \
-  && grep -q 'z-index' "${PAGE_HOME}" \
-  && grep -q 'padding' "${PAGE_HOME}" \
-  && pass "[C2] Skip link hide/show CSS" \
-  || fail "[C2] Skip link hide/show CSS"
+# C2-C15: CSS rules verified against the <style> block alone, so markup or
+# content elsewhere on the page cannot satisfy a check. All pages share the
+# same inline styles; home is a reliable proxy.
+STYLE="$(awk '/<style>/,/<\/style>/' "${PAGE_HOME}")"
 
-grep -q '100ch' "${PAGE_HOME}" \
-  && pass "[C3] Body max-width CSS" \
-  || fail "[C3] Body max-width CSS"
-
-grep -q 'line-height: 1.6' "${PAGE_HOME}" \
-  && pass "[C4] Body line-height CSS" \
-  || fail "[C4] Body line-height CSS"
-
-grep -q 'height: auto' "${PAGE_HOME}" \
-  && pass "[C5] Image responsive CSS" \
-  || fail "[C5] Image responsive CSS"
-
-grep -q 'border-collapse' "${PAGE_HOME}" \
-  && grep -q '\.table-wrap { overflow-x: auto' "${PAGE_HOME}" \
-  && grep -q '<div class="table-wrap">' "${PAGE_MARKDOWN}" \
-  && pass "[C6] Table border CSS" \
-  || fail "[C6] Table border CSS"
-
-grep -q 'list-style: none' "${PAGE_HOME}" \
-  && pass "[C7] Nav reset CSS" \
-  || fail "[C7] Nav reset CSS"
-
-grep -q '\[aria-current' "${PAGE_HOME}" \
-  && pass "[C8] Active nav CSS" \
-  || fail "[C8] Active nav CSS"
-
-grep -q 'prefers-color-scheme: dark' "${PAGE_HOME}" \
-  && pass "[C9] Dark mode CSS" \
-  || fail "[C9] Dark mode CSS"
-
-grep -q 'overflow-x: auto' "${PAGE_HOME}" \
-  && pass "[C10] Pre overflow CSS" \
-  || fail "[C10] Pre overflow CSS"
-
-grep -q 'font-size: 18px' "${PAGE_HOME}" \
-  && pass "[C11] Body font-size CSS" \
-  || fail "[C11] Body font-size CSS"
-
-grep -q 'math\[display="block"\]' "${PAGE_HOME}" \
-  && pass "[C13] Math block overflow CSS" \
-  || fail "[C13] Math block overflow CSS"
-
-grep -q 'nav\[aria-label="Tags"\] ul li' "${PAGE_HOME}" \
-  && pass "[C14] Tag list inline CSS" \
-  || fail "[C14] Tag list inline CSS"
-
-grep -q 'color-scheme: light dark' "${PAGE_HOME}" \
-  && pass "[C15] Colour scheme CSS" \
-  || fail "[C15] Colour scheme CSS"
+check_style "[C2] Skip link hide/show CSS" \
+  '.skip-link { position: absolute; left: -9999px;' \
+  '.skip-link:focus { left: 0; z-index: 1; background: #fff; padding:'
+check_style "[C3] Body max-width CSS" 'body { max-width: 100ch;'
+check_style "[C4] Body line-height CSS" 'line-height: 1.6;'
+check_style "[C5] Image responsive CSS" 'img { max-width: 100%; height: auto; }'
+check_style "[C6] Table border CSS" \
+  'table { border-collapse: collapse; }' \
+  '.table-wrap { overflow-x: auto; }'
+grep -q '<div class="table-wrap">' "${PAGE_MARKDOWN}" \
+  && pass "[C6] Table wrapper emitted" \
+  || fail "[C6] Table wrapper emitted"
+check_style "[C7] Nav reset CSS" 'nav ul { list-style: none; margin: 0; padding: 0; }'
+check_style "[C8] Active nav CSS" '[aria-current="page"] { font-weight: bold; }'
+check_style "[C9] Dark mode CSS" '@media (prefers-color-scheme: dark)'
+check_style "[C10] Pre overflow CSS" 'pre { overflow-x: auto; }'
+check_style "[C11] Body font-size CSS" 'font-size: 18px;'
+check_style "[C13] Math block overflow CSS" 'math[display="block"] { display: block; overflow-x: auto;'
+check_style "[C14] Tag list inline CSS" 'nav[aria-label="Tags"] ul li { display: inline; }'
+check_style "[C15] Colour scheme CSS" ':root { color-scheme: light dark; }'
 
 # Math renders to native MathML at build time (render-passthrough.html + the
 # passthrough delimiters in exampleSite/hugo.toml). This also gives the R1/R4/R5
@@ -303,8 +294,19 @@ printf '=== 5. S1-S7: Semantic HTML & Accessibility ===\n'
 # S1: Skip link, <a href="#main-content">Skip to content</a> on every page
 check_all "[S1] Skip link element" 'Skip to content' "${ALL_PAGES[@]}"
 
-# S2: aria-label on every <nav>
-check_all "[S2] Nav aria-label" 'aria-label' "${ALL_PAGES[@]}"
+# S2: aria-label on every <nav>, checked per element rather than once per page
+S2_FAIL=()
+for page in "${ALL_PAGES[@]}"; do
+  if grep -o '<nav[^>]*>' "${page}" | grep -qv 'aria-label='; then
+    S2_FAIL+=("${page##${PUBLIC}/}")
+  fi
+done
+if [[ "${#S2_FAIL[@]}" -eq 0 ]]; then
+  pass "[S2] Nav aria-label"
+else
+  fail "[S2] Nav aria-label"
+  printf '        unlabelled nav in: %s\n' "${S2_FAIL[@]}"
+fi
 
 # S3: aria-current="page" on the active nav link, blog list has Blog item active
 grep -q 'aria-current="page"' "${PAGE_BLOG_LIST}" \
@@ -321,7 +323,8 @@ grep -q '<time ' "${PAGE_BLOG_POST}" \
   || fail "[S5] Blog post time elem"
 
 # S6: Image render hook, imageMode param with eager/lazy loading and link modes.
-# Verified via template source, example site content does not embed images.
+# Verified via template source: the example site's image syntax sits inside
+# code fences, so no built page embeds an image.
 grep -q '<figure>' "layouts/_markup/render-image.html" \
   && grep -q 'loading=' "layouts/_markup/render-image.html" \
   && grep -q 'fetchpriority' "layouts/_markup/render-image.html" \
@@ -339,7 +342,8 @@ printf '\n'
 printf '=== 6. M1-M10: SEO & Metadata ===\n'
 
 # M1: <meta charset> and viewport on every page
-check_head_all "[M1] charset and viewport" 'charset' "${ALL_PAGES[@]}"
+check_head_all "[M1] charset" '<meta charset=' "${ALL_PAGES[@]}"
+check_head_all "[M1] viewport" 'name="viewport"' "${ALL_PAGES[@]}"
 
 # M2: Canonical URL, <link rel="canonical"> on every page
 check_head_all "[M2] Canonical URL" 'rel="canonical"' "${ALL_PAGES[@]}"
