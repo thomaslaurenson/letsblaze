@@ -147,7 +147,7 @@ Constraints are grouped by category with a category prefix:
 | R1 | **No JavaScript**: no `<script>` tags of any kind |
 | R2 | **No external CSS**: no `rel="stylesheet"` links |
 | R3 | **No CDN resources**: no cdn., fonts.googleapis, or fonts.gstatic URLs |
-| R4 | **No inline `style=`**: no `style=` attributes on HTML elements (Chroma `<span>` and `<pre>` are exempt) |
+| R4 | **No inline `style=`**: no `style=` attributes on HTML elements (Chroma `<span>` and `<pre>` are exempt). Code fence line numbers are ignored because Chroma renders them as a `<table>` with inline styles; `hl_lines` is honoured. |
 | R5 | **No CSS frameworks or utility classes**: no Tailwind/Bootstrap/etc., no atomic or utility classes (e.g. `mt-4`, `flex`), and no class used purely for decoration. Semantic classes that *name a structural region* (e.g. `docs-sidebar`, `breadcrumb`) are permitted, because they enable structure-communicating CSS that is already inline and costs no request. Chroma and Goldmark footnote classes remain exempt. |
 
 ### CSS Integrity

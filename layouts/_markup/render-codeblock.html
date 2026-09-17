@@ -1,1 +1,6 @@
-{{ highlight .Inner .Type "" }}
+{{/*
+  Line numbers are forced off whatever the fence asks for. Chroma renders them
+  as a table and a div carrying inline styles, which R4 forbids. Line
+  highlighting only styles spans, so hl_lines passes through
+*/}}
+{{ (transform.HighlightCodeBlock . (dict "lineNos" false)).Wrapped }}
