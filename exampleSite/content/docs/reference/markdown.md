@@ -2,6 +2,7 @@
 title: "Markdown"
 date: 2026-01-01
 draft: false
+weight: 2
 description: "A complete reference for Markdown syntax supported by letsblaze, including headings, tables, code, lists, and blockquotes."
 ---
 

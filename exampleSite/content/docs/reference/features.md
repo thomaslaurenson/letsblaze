@@ -2,6 +2,7 @@
 title: "Features"
 date: 2026-01-01
 draft: false
+weight: 1
 description: "A complete reference for all letsblaze theme features: shortcodes, dark mode, RSS, accessibility, and SEO."
 ---
 

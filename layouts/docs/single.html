@@ -6,5 +6,9 @@
   {{ .Content }}
 </article>
 <hr>
-{{ partial "prev-next.html" (dict "prev" .PrevInSection "next" .NextInSection "label" "Page navigation" "noun" "page") }}
+{{/*
+  Docs read in section order, weight then date then title. Hugo's NextInSection
+  is the page before this one in that order, so the two are swapped here
+*/}}
+{{ partial "prev-next.html" (dict "prev" .NextInSection "next" .PrevInSection "label" "Page navigation" "noun" "page") }}
 {{ end }}

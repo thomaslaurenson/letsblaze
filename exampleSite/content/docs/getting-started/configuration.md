@@ -2,6 +2,7 @@
 title: "Configuration"
 date: 2026-01-01
 draft: false
+weight: 2
 description: "All configuration options for the letsblaze Hugo theme."
 ---
 
