@@ -41,12 +41,15 @@
     {{ if templates.Exists "partials/logo.html" }}
       {{ partial "logo.html" . }}
     {{ else }}
-      <a href="/">{{ .Site.Title }}</a>
+      <a href="{{ .Site.Home.RelPermalink }}">{{ .Site.Title }}</a>
     {{ end }}
     <nav aria-label="Main navigation">
       <ul>
         {{ range .Site.Menus.main }}
-          <li><a href="{{ .URL }}"{{ if or (eq $.RelPermalink .URL) (and (ne .URL "/") (hasPrefix $.RelPermalink .URL)) }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
+          {{/* An entry defined by url is site-relative and needs the base path; one defined by pageRef already has it */}}
+          {{ $url := .URL }}
+          {{ if not .Page }}{{ $url = relURL .URL }}{{ end }}
+          <li><a href="{{ $url }}"{{ if or (eq $.RelPermalink $url) (and (ne $url $.Site.Home.RelPermalink) (hasPrefix $.RelPermalink $url)) }} aria-current="page"{{ end }}>{{ .Name }}</a></li>
         {{ end }}
       </ul>
     </nav>

@@ -95,7 +95,7 @@ To use a custom logo instead of the plain text site title, create `layouts/parti
 Example `layouts/partials/logo.html`:
 
 ```html
-<a href="/">
+<a href="{{ .Site.Home.RelPermalink }}">
   <svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" aria-label="{{ .Site.Title }}">
     <!-- your SVG content here -->
   </svg>
