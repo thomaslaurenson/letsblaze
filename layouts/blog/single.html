@@ -19,9 +19,5 @@
   {{ .Content }}
 </article>
 <hr>
-<nav aria-label="Post navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous post: {{ .Title }}">prev - {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} - {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next post: {{ .Title }}">next - {{ .Title }}</a>{{ end }}
-</nav>
+{{ partial "prev-next.html" (dict "prev" .PrevInSection "next" .NextInSection "label" "Post navigation" "noun" "post") }}
 {{ end }}

@@ -6,9 +6,5 @@
   {{ .Content }}
 </article>
 <hr>
-<nav aria-label="Page navigation">
-  {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" aria-label="Previous page: {{ .Title }}">prev - {{ .Title }}</a>{{ end }}
-  {{ if and .PrevInSection .NextInSection }} - {{ end }}
-  {{ with .NextInSection }}<a href="{{ .RelPermalink }}" aria-label="Next page: {{ .Title }}">next - {{ .Title }}</a>{{ end }}
-</nav>
+{{ partial "prev-next.html" (dict "prev" .PrevInSection "next" .NextInSection "label" "Page navigation" "noun" "page") }}
 {{ end }}
