@@ -19,6 +19,9 @@ disableHugoGeneratorInject = false  # intentional, we like Hugo
 [permalinks]
   blog = "/blog/:slug/"
 
+[taxonomies]
+  tag = "tags"  # letsblaze ships layouts for tags only, so categories are not generated
+
 [markup.goldmark.parser]
   wrapStandAloneImageWithinParagraph = false  # lets the image hook wrap a standalone image in <figure>
 

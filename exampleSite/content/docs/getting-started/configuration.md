@@ -24,6 +24,15 @@ All letsblaze configuration lives in `hugo.toml`. Below is a complete reference 
   pagerSize = 10
 ```
 
+## Taxonomies
+
+```toml
+[taxonomies]
+  tag = "tags"
+```
+
+letsblaze ships layouts for tags only. Listing just `tags` stops Hugo generating the default `categories` pages and feed that nothing links to.
+
 ## Front matter
 
 ```toml
