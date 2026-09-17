@@ -2,7 +2,8 @@
 {{ with .Site.Params.description }}<p>{{ . }}</p>{{ end }}
 
 <h2>Blog</h2>
-{{ $posts := where .Site.RegularPages "Section" "blog" }}
+{{ $count := .Site.Params.homepagePostCount | default 5 }}
+{{ $posts := first $count (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
 {{ range $posts.GroupByDate "2006" }}
   <h3>{{ .Key }}</h3>
   <ul>
