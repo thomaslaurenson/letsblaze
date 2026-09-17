@@ -12,6 +12,10 @@ SITE_DIR="exampleSite"
 CONTENT_DIR="${SITE_DIR}/content"
 PUBLIC="${SITE_DIR}/public"
 HUGO_FLAGS=(--themesDir ../.. --theme "${THEME}")
+# The deploy workflow ships a minified build, so the resource checks run over
+# one of those too. The other checks match on whitespace and use the plain build.
+PUBLIC_MIN="$(mktemp -d)"
+trap 'rm -rf -- "${PUBLIC_MIN}"' EXIT
 
 PASS=0
 FAIL=0
@@ -107,6 +111,10 @@ if ! (cd "${SITE_DIR}" && hugo "${HUGO_FLAGS[@]}" 2>&1); then
   printf '  ERROR: hugo build failed, aborting tests\n'
   exit 1
 fi
+if ! (cd "${SITE_DIR}" && hugo "${HUGO_FLAGS[@]}" --minify --quiet -d "${PUBLIC_MIN}" 2>&1); then
+  printf '  ERROR: minified hugo build failed, aborting tests\n'
+  exit 1
+fi
 printf '\n'
 
 # Page sets used by constraint checks
@@ -168,11 +176,12 @@ for page in "${EXPECTED_PAGES[@]}"; do
 done
 printf '\n'
 
-# 3. Constraints: Resources & CSS authoring (R1-R5)
+# 3. Constraints: Resources & CSS authoring (R1-R5), over both builds
 printf '=== 3. R1-R5: Resources & CSS authoring ===\n'
+BUILDS=("${PUBLIC}" "${PUBLIC_MIN}")
 
 # R1: No JavaScript, no <script> tags of any kind
-HITS=$(grep -rn '<script' "${PUBLIC}" || true)
+HITS=$(grep -rn '<script' "${BUILDS[@]}" || true)
 if [[ -z "${HITS}" ]]; then
   pass "[R1] No JavaScript"
 else
@@ -181,7 +190,7 @@ else
 fi
 
 # R2: No external CSS, no rel="stylesheet" links
-HITS=$(grep -rn 'rel="stylesheet"' "${PUBLIC}" || true)
+HITS=$(grep -rn 'rel="stylesheet"' "${BUILDS[@]}" || true)
 if [[ -z "${HITS}" ]]; then
   pass "[R2] No external CSS"
 else
@@ -190,7 +199,7 @@ else
 fi
 
 # R3: No CDN or external font resources
-HITS=$(grep -rn 'cdn\.\|fonts\.googleapis\.\|fonts\.gstatic\.' "${PUBLIC}" || true)
+HITS=$(grep -rn 'cdn\.\|fonts\.googleapis\.\|fonts\.gstatic\.' "${BUILDS[@]}" || true)
 if [[ -z "${HITS}" ]]; then
   pass "[R3] No CDN resources"
 else
@@ -201,7 +210,7 @@ fi
 # R4: No inline style= attributes. Chroma emits style= on its <span> and <pre>
 # elements, so those two tags are exempt. Each opening tag is matched on its
 # own, so a span on the same line cannot hide another element's style=.
-HITS=$(grep -rnoE '<[a-zA-Z]+[^>]*\bstyle="' "${PUBLIC}" \
+HITS=$(grep -rnoE '<[a-zA-Z]+[^>]*\bstyle="' "${BUILDS[@]}" \
   | grep -vE ':<(span|pre)[ >]' \
   || true)
 if [[ -z "${HITS}" ]]; then
@@ -212,25 +221,26 @@ else
 fi
 
 # R5: No CSS frameworks or utility classes.
-# Semantic structural classes (e.g. docs-sidebar, breadcrumb) are allowed; the
+# Semantic structural classes (e.g. post-meta, table-wrap) are allowed; the
 # CSS for them is inline and costs no request. What is NOT allowed: utility/
 # atomic classes and known framework class signatures. We detect those by
 # pattern rather than maintaining an allowlist of every permitted class.
 #
-# Heuristics (each line is a prohibited signature):
-#   - Tailwind-style utilities: tokens like mt-4, px-2, text-sm, flex, grid,
-#     gap-4, w-1/2 (short tokens of the form <prefix>-<value>), or bare layout
-#     utilities, appearing among space-separated classes.
+# Every class attribute is reduced to its tokens first, whether quoted or not
+# (the minifier drops the quotes), so each token is judged on its own and prose
+# sharing a line with a class attribute can never match. Attributes escaped
+# inside code samples start with &#34; and are skipped.
+#
+# Heuristics (each alternative is a prohibited signature):
+#   - Tailwind-style utilities: tokens like mt-4, px-2, text-sm, gap-4, w-1/2
+#     (short tokens of the form <prefix>-<value>), or bare layout utilities
+#     such as flex, grid, block, hidden.
 #   - Bootstrap signatures: col-*, row, btn, btn-*, container, d-flex, etc.
-# A utility/framework token is one that appears either immediately after the
-# opening quote (class="TOKEN...) or after a space (class="... TOKEN). We encode
-# that "start boundary" as (class="| ) and match the token after it.
-UTILITY_RE='(class="| )(flex|grid|block|inline-block|hidden|container|row|btn)( |"|-)'
-UTILITY_RE+='|(class="| )(mt|mb|ml|mr|mx|my|pt|pb|pl|pr|px|py|p|m|w|h|gap|text|bg|font|col|d)-[0-9a-z]'
-HITS=$(grep -rnE "${UTILITY_RE}" "${PUBLIC}" \
-  | grep 'class=' \
-  | grep -v 'class="language-' \
-  || true)
+CLASS_TOKENS="$(grep -rhoE 'class=("[^"]*"|[A-Za-z][^ >]*)' "${BUILDS[@]}" \
+  | sed -E 's/^class=//; s/"//g' | tr ' ' '\n' | sort -u)"
+UTILITY_RE='^(flex|grid|block|inline-block|hidden|container|row|btn)($|-)'
+UTILITY_RE+='|^(mt|mb|ml|mr|mx|my|pt|pb|pl|pr|px|py|p|m|w|h|gap|text|bg|font|col|d)-[0-9a-z]'
+HITS=$(grep -E "${UTILITY_RE}" <<< "${CLASS_TOKENS}" || true)
 if [[ -z "${HITS}" ]]; then
   pass "[R5] No frameworks or utility classes"
 else
