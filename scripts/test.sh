@@ -198,10 +198,11 @@ else
   printf '%s\n' "${HITS}" | sed 's/^/        /'
 fi
 
-# R4: No inline style= attributes (Chroma emits style= on <span> and <pre>, exempt)
-HITS=$(grep -rn ' style="' "${PUBLIC}" \
-  | grep -v '<span style=' \
-  | grep -v '<pre style=' \
+# R4: No inline style= attributes. Chroma emits style= on its <span> and <pre>
+# elements, so those two tags are exempt. Each opening tag is matched on its
+# own, so a span on the same line cannot hide another element's style=.
+HITS=$(grep -rnoE '<[a-zA-Z]+[^>]*\bstyle="' "${PUBLIC}" \
+  | grep -vE ':<(span|pre)[ >]' \
   || true)
 if [[ -z "${HITS}" ]]; then
   pass "[R4] No inline style= attrs"
