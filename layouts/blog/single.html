@@ -2,7 +2,7 @@
 {{ partial "breadcrumb.html" . }}
 <article itemscope itemtype="https://schema.org/BlogPosting">
   <h1 itemprop="headline">{{ .Title }}</h1>
-  <dl>
+  <dl class="post-meta">
     <dt>Date</dt>
     <dd><time itemprop="datePublished" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02") }}</time></dd>
     {{ with .GetTerms "tags" }}
