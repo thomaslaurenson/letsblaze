@@ -6,6 +6,7 @@ on:
       - ".github/workflows/**"
       - "Makefile"
       - "exampleSite/**"
+      - "hugo.toml"
       - "layouts/**"
       - "scripts/**"
 
