@@ -3,7 +3,11 @@
 {{ .Content }}
 {{ with .Site.Taxonomies.tags }}
 <nav aria-label="Tags">
-  {{ range .ByCount }}<a href="{{ .Page.RelPermalink }}">{{ .Page.Title }} ({{ .Count }})</a> {{ end }}
+  <ul>
+    {{ range .ByCount }}
+      <li><a href="{{ .Page.RelPermalink }}">{{ .Page.Title }} ({{ .Count }})</a></li>
+    {{ end }}
+  </ul>
 </nav>
 {{ end }}
 {{ partial "post-list.html" . }}

@@ -171,6 +171,7 @@ New rules must pass the gate in [Philosophy](#where-the-css-line-is-drawn): they
 | C11 | **`body { font-size: 18px }`** | Browser default (16px) is too small for comfortable long-form reading |
 | C12 | **`article + article { margin-top: 2rem }`** | Separates post list entries with whitespace instead of `<hr>` for a cleaner visual rhythm |
 | C13 | **`math[display="block"] { overflow-x: auto }`** | Wide display equations scroll horizontally within their own box instead of overflowing the page, mirroring C6 (tables) and C10 (code) |
+| C14 | **`nav[aria-label="Tags"] ul li { display: inline }`** | Keeps the blog tag cloud compact instead of one tag per line, while the list markup lets assistive technology announce how many tags there are |
 
 ### Semantic HTML and Accessibility
 
