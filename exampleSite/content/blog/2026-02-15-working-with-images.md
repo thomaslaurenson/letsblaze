@@ -48,8 +48,8 @@ The recommended way to use images is as page bundles: store the image alongside 
 content/
   blog/
     working-with-images/
-      index.md        ← this file
-      hero.jpg        ← image in the same directory
+      index.md        <- this file
+      hero.jpg        <- image in the same directory
 ```
 
 This is a leaf bundle. Hugo can read the image dimensions at build time and emit `width` and `height` attributes automatically, preventing layout shift (CLS).
