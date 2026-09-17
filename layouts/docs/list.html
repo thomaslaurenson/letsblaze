@@ -5,18 +5,10 @@
 <article>
   <h1>{{ .Title }}</h1>
   {{ .Content }}
-  {{ if .Parent.IsHome }}
-    <ul>
-      {{ range .Sections }}
-        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-      {{ end }}
-    </ul>
-  {{ else }}
-    <ul>
-      {{ range .Pages }}
-        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-      {{ end }}
-    </ul>
-  {{ end }}
+  <ul>
+    {{ range .Pages }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{ end }}
+  </ul>
 </article>
 {{ end }}

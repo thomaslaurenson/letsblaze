@@ -22,14 +22,14 @@
     {{ $subsection := . }}
     <h4><a href="{{ $subsection.RelPermalink }}">{{ $subsection.Title }}</a></h4>
     <ul>
-      {{ range $subsection.Pages }}
+      {{ range $subsection.RegularPages }}
         <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
       {{ end }}
     </ul>
   {{ end }}
-  {{ if $section.Pages }}
+  {{ with $section.RegularPages }}
     <ul>
-      {{ range $section.Pages }}
+      {{ range . }}
         <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
       {{ end }}
     </ul>
