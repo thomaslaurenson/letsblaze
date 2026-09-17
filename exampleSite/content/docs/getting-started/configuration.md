@@ -24,6 +24,15 @@ All letsblaze configuration lives in `hugo.toml`. Below is a complete reference 
   pagerSize = 10
 ```
 
+## Front matter
+
+```toml
+[frontmatter]
+  date = [":filename", ":default"]
+```
+
+A blog post named `YYYY-MM-DD-my-post.md` takes its date from the filename and its slug from the rest, so `make new_post NAME=2026-09-17-my-post` publishes at `/blog/my-post/` with a clean title. A file without the prefix falls back to the `date` in its front matter.
+
 ## Markup
 
 ```toml

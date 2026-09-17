@@ -195,15 +195,16 @@ main() {
   done < <(find "${CONTENT_DIR}" -mindepth 1 -type d -print0 | sort -z)
 
   # Content pages, all .md files except _index.md.
-  # Hugo automatically strips a leading YYYY-MM-DD- date prefix from the slug,
-  # so derive the expected output path from the slug-form name, not the raw filename.
+  # The example config sets frontmatter.date = [":filename", ":default"], so Hugo
+  # takes a YYYY-MM-DD- filename prefix as the date and the remainder as the slug.
+  # Derive the expected output path the same way.
   while IFS= read -r -d '' mdfile; do
     rel="${mdfile#"${CONTENT_DIR}"/}"
     base="${rel%.md}"
     [[ "$(basename "${base}")" == "_index" ]] && continue
     dir="$(dirname "${base}")"
     name="$(basename "${base}")"
-    # Strip YYYY-MM-DD- prefix if present (mirrors Hugo's automatic slug behaviour)
+    # Strip YYYY-MM-DD- prefix if present (mirrors the :filename handling)
     name="${name#[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-}"
     if [[ "${dir}" == "." ]]; then
       base="${name}"

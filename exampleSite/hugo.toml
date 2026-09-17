@@ -13,6 +13,9 @@ disableHugoGeneratorInject = false  # intentional, we like Hugo
 [pagination]
   pagerSize = 10
 
+[frontmatter]
+  date = [":filename", ":default"]  # a YYYY-MM-DD- filename prefix sets the date and the slug
+
 [permalinks]
   blog = "/blog/:slug/"
 
